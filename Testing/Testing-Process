@@ -1,0 +1,29 @@
+Login:
+    DB Login Process
+    DB Login Multi Factor
+    HSM Login Process
+    HSM Login Multi Factor
+    Ldap Login Process
+    Ldap Login Multi Factor
+    AD Login Process
+    AD Login Multi Factor
+
+register:
+    DB register Process
+    Ldap register Process
+    AD register Process
+
+forgot-password
+
+profile:
+    Enable the two factor feature
+    Profile Edit
+
+İndex:
+    Pool Create
+    Pool Delete
+    Pool Edit
+    Pool Make it active
+
+
+
