@@ -1,0 +1,170 @@
+version: '2'
+services:
+  pki-hsm-1:
+    image: pkihsm-twoslot:2.0
+    container_name: hsm-1
+    ports:
+      - "5000:5000"
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.2
+
+  pki-hsm-2:
+    image: pkihsm-twoslot:2.0
+    container_name: hsm-2
+    ports:
+      - "5050:5000"
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.3
+
+  postgres:
+    image: postgres:latest
+    container_name: PKI-DB
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      TZ: "Europe/Istanbul"
+    volumes:
+      - ./Postgresql/:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.4
+
+  app-pki:
+    image: pki_hsm_all:1.0
+    container_name: pki-app
+    environment:
+      PYKCS11LIB: /lib64/libprocryptoki.so
+      RABBITMQ_HOST: pki_rabbitmq
+      TZ: "Europe/Istanbul"
+      API_Slot: IoaqNDIk1Z9Lx8XL3t13PuoovWvum83U
+      Slot_PIN: gAAAAABlUhkSu9zmmOqy_Q8CQchXhGyhb0aPYcJ1tXO4oeHYESw-hxZjbbwTWeDrvCwMVO9xE13H7TJxNIV3JEDYfKyG_s0sEg==
+      Slot_ID: 1
+      Slot_Key_Name: Slot_Encrypt_AES
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./PKI-APP/app/:/app/
+      - ./PKI-APP/config/:/opt/procrypt/km3000/config/
+      - ./Backup_Logs/:/opt/BackupLog/
+    command: ["python3", "/app/app.py"]
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.5
+
+  app-gui:
+    image: pki-gui:1.0
+    container_name: pki-gui    
+    depends_on:
+      - postgres
+      - app-pki
+    environment:
+      Postgresql_DB: pki_gui_db
+      Postgresql_User: postgres
+      Postgresql_Password: postgres
+      Postgresql_IP: postgres
+      Postgresql_Port: 5432
+      API_URL: http://app-pki:8000/
+      TZ: "Europe/Istanbul"
+      API_Slot: IoaqNDIk1Z9Lx8XL3t13PuoovWvum83U
+    ports:
+      - "9000:8000"
+    volumes:
+        - ./PKI-GUI/app/:/app/
+        - ./PKI-APP/app/CRT/:/app/app/CRT/:rb
+        - ./PKI-APP/app/Public/:/app/app/Public/
+        - ./PKI-APP/app/CSR/:/app/app/CSR/
+        - ./Backup_Logs/:/opt/BackupLog/
+    
+    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.7
+
+  rabbitmq:
+      image: "rabbitmq:management"
+      container_name: "pki_rabbitmq"
+      ports:
+        - "5672:5672"
+        - "15672:15672"
+     
+      environment:
+        RABBITMQ_DEFAULT_USER: "myuser"
+        RABBITMQ_DEFAULT_PASS: "mypassword"
+        TZ: "Europe/Istanbul"
+      volumes:
+        - ./rabbitmq_data:/var/lib/rabbitmq
+      networks:
+        my_network:
+          ipv4_address: 172.16.0.8
+      depends_on:
+        - app-pki
+        - app-gui
+
+  ldap-server:
+    image: procenneldap:latest
+    container_name: ldap-server
+    environment:
+      - LDAP_DOMAIN=procenne.com
+      - LDAP_ADMIN_PASSWORD=admin
+      - LDAP_TLS_VERIFY_CLIENT=never
+      - LDAP_TLS_CRT_FILENAME=ldap.crt
+      - LDAP_TLS_KEY_FILENAME=ldap.key
+
+    ports:
+      - 389:389
+      - 636:636
+
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.11
+
+  pki-ftp:
+    image: pkiftpserver:latest
+    container_name: ftp-pki
+    ports:
+       - "21:21"
+    volumes:
+      - ./FTP-Server/data/:/app/LogBackup/
+    command: ["python3","-m", "python_ftp_server", "--ip","0.0.0.0","--port","21","-u","FTPAdmin","-p","1q2w3e4r5t*","-d","/app/LogBackup/"]
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.12
+  pki-mail:
+    image: pkimail:1.0
+    container_name: pki-mail
+    ports:
+       - "1025:1025"
+       - "8025:8025"
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.13
+        
+  pki-alarm:
+    image: pkialarm:2.0
+    container_name: pki-alarm
+    ports:
+       - "9090:8000"
+    environment:
+      Postgresql_DB: pki_gui_db
+      Postgresql_User: postgres
+      Postgresql_Password: postgres
+      Postgresql_IP: postgres
+      Postgresql_Port: 5432
+    volumes:
+      - ./PKI-Alarm/app/:/app/
+      - ./PKI-GUI/app/app/models.py:/app/app/models.py
+    command: ["python3", "manage.py"]
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.14
+networks:
+  my_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.0/24
