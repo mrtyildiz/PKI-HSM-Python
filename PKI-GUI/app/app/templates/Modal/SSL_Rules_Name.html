@@ -1,0 +1,53 @@
+        <!-- Modal -->
+        <div class="modal fade" id="ssl_rules">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST">
+					{% csrf_token %}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne HSM Token</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Rule Name</label>
+                            <input class="form-control" type="text" name="rule_name" required>
+                        </div>
+
+                        <div class="form-floating">
+                            <select class="form-select" name="rule_type" id="floatingSelectGrid" aria-label="Floating label select example">
+                                <option value="Nginx">Nginx</option>
+                                <option value="F5">F5</option>
+                                <option value="Citrix">Citrix</option>
+                            </select>
+                            <label for="floatingSelectGrid">Select Rule Type</label>
+                        </div>
+                        <p></p>
+                        
+                        <p></p>
+                        <div class="form-floating">
+                            <select class="form-select" name="cert_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                {% for cert_names in Client_certificate %}
+                                    <option value="{{ cert_names }}">{{ cert_names }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="floatingSelectGrid">Select Client Certificate</label>
+                        </div>
+                       
+							
+							
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+				</form>
+                    
+                </div>
+            </div>
+        </div>

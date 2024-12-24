@@ -1,0 +1,45 @@
+        <!-- Modal -->
+        <div class="modal fade" id="CSR_Load">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST" enctype="multipart/form-data" action="{% url 'crt_load' %}">
+					{% csrf_token %}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne CRT Load</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+                        <div class="form-floating">
+                                
+                            <select class="form-select" name="token_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                {% for item in HSM_All_object %}
+                                    <option value="{{ item.TokenName }}">{{ item.TokenName }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="floatingSelectGrid">Token Name </label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">CRT File Upload</label>
+                            <input class="form-control" name="crtfile" type="file" id="formFile" required>
+                          </div>
+                         
+
+							<div class="mb-3">
+								<label class="form-label">Certificate File Name</label>
+								<input class="form-control" type="text" name="crt_file_name"/ required>
+							</div>
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+				</form>
+                    
+                </div>
+            </div>
+        </div>

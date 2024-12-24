@@ -1,0 +1,52 @@
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="BackupLogFile">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <form method="POST">
+            {% csrf_token %}
+            <!-- Modal Başlık -->
+            <div class="modal-header">
+                <h4 class="modal-title">Procenne Log</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <!-- Modal İçerik -->
+            <div class="modal-body">
+                <div class="scrollable-table">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">File Name</th>
+                        <th scope="col">First Date</th>
+                        <th scope="col">Last Date</th>
+                        <th scope="col">Button</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for Log in Logs_File %}
+                      <tr>
+                        <th>{{ Log.file_name }}</th>
+                        <td>{{ Log.First_date }}</td>
+                        <td>{{ Log.Last_date }}</td>
+                        <td><a href="{% url 'Single_Backup_CSV' filename=Log.file_name %}"><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#FileLogShow">
+                            Snow
+                          </button></a></td>
+                      </tr>
+                    {% endfor %}
+                      
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+            
+            <!-- Modal Ayak -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+
+        </form>
+            
+        </div>
+    </div>
+</div>

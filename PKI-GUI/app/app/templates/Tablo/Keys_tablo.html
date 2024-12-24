@@ -1,0 +1,99 @@
+<style>
+  .scrollable-table {
+      max-height: 500px; /* İstenilen yüksekliği ayarlayın */
+      overflow-y: auto;
+  }
+</style>
+<main class="content">
+    <div class="container-fluid p-0">
+
+        <h1 class="h3 mb-3"><strong>Procenne</strong> ProCrypt HSM</h1>
+
+        <div class="row">
+            
+            <div class="col-15">
+                
+                <div class="card flex-fill">
+                    
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title col-6">HSM Keys</h5>
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Valid_Key_CRT_Modal">
+                            Valid Certificate
+                          </button>
+                          <p></p>
+                          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CRTCreate2">
+                            CSR Create
+                          </button>
+                          <p></p>
+                          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#KeysCreate">
+                            Create
+                          </button>
+                        </div>
+                    </div>
+                    
+                {% include 'Modal/CSR_Create.html' %}
+                {% include 'Modal/CSR_Create2.html' %}
+                {% include 'Modal/Valid_Key_CRT.html' %}
+                
+                {% include 'Modal/Keys_Create.html' %}
+
+
+                
+
+                  <div class="scrollable-table">
+                    <table class="table table-hover my-0">
+                        <thead>
+                            <tr>
+                                <th>Slot ID</th>
+                                <th>HSM Token Name</th>
+                                <th>Key Type</th>
+                                <th>Key Name</th>
+                                <th>Key BIT</th>
+                                <th class="d-none d-md-table-cell">#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key in keys_list %}
+                            <tr>
+                                <td>{{ key.SlotID }}</td>
+                                <td>{{ key.Token_Name }}</td>
+                                <td>{{ key.Keys_Type }}</td>
+                                <td>{{ key.Keys_Name }}</td>
+                                <td>{{ key.Key_BIT }}</td>
+                                <td class="d-none d-md-table-cell"><div class="col">
+
+                                    <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#KeysDeleteModal{{ key.id }}">Delete</a>
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="KeysDeleteModal{{ key.id }}">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">HSM Keys Delete</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <p>Are you sure you want to delete the key named {{ key.Keys_Name }} ?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                              <a href="/Keys_List/{{ key.id }}" class="btn btn-danger">Delete</a>
+                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div></td>
+                            </tr>
+                            {% endfor %}
+                        
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+</main>

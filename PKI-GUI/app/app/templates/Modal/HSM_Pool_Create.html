@@ -1,0 +1,47 @@
+        <!-- Modal -->
+        <div class="modal fade" id="HSMModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST">
+					{% csrf_token %}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne HSM Pool</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+						
+							<div class="mb-3">
+								<label for="exampleInputEmail1" class="form-label">HSM Pool Name</label>
+								<input type="text" class="form-control" name="hsm_pool_name" required>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">HSM IP Address</label>
+								<input class="form-control" type="text" name="hsm_ip_addres" required>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">HSM Port Address</label>
+								<input class="form-control" type="text" name="hsm_port_addres" required>
+							</div>
+							<div class="form-floating">
+								<select class="form-select" name="hsm_type" id="floatingSelectGrid" aria-label="Floating label select example">
+								<option value="Multi">Multi</option>
+								<option value="Single">Single</option>
+								</select>
+								<label for="floatingSelectGrid">Select HSM Type</label>
+							</div>
+						
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+				</form>
+                    
+                </div>
+            </div>
+        </div>

@@ -1,0 +1,275 @@
+{% load Dashboard_tag %}
+<main class="content">
+    <div class="container-fluid p-0">
+        
+        <div class="card-header d-flex justify-content-between">
+            <h1 class="h3 mb-3"><strong>Procenne</strong> ProCrypt HSM</h1>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#HSMNewToken2">
+                    New Token Create</button></div>
+                
+          </div>
+          <div class="modal fade" id="HSMNewToken2" aria-hidden="true" aria-labelledby="HSMNewToken2Label" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="HSMNewToken2Label"><h4 class="modal-title">Procenne HSM Token</h4></h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                                <div class="form-floating">
+                                    <select class="form-select" name="pool_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                        {% for HSM_Name in HSM_Name %}
+                                            <option value="{{ HSM_Name.HSM_Pool_Name }}">{{ HSM_Name.HSM_Pool_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="floatingSelectGrid">Select HSM Pool Name</label>
+                                </div>
+                                <p></p>
+                                <!--Token_Label -->
+                                <div class="mb-3">
+                                    <label class="form-label">HSM Slot Label</label>
+                                    <input class="form-control" type="text" name="Token_Label" required>
+                                </div>
+                                <!--ho_pin -->
+                                <div class="mb-3">
+                                    <label class="form-label">HSM Operator PIN</label>
+                                    <input class="form-control" type="password" name="ho_pin" required>
+                                </div>
+                                <!--ha_pin -->
+                                <div class="mb-3">
+                                    <label class="form-label">HSM Admin PIN</label>
+                                    <input class="form-control" type="password" name="ha_pin" required>
+                                </div>
+                                <!--SO_PIN-->
+                                <div class="mb-3">
+                                    <label class="form-label">HSM Slot SO PIN</label>
+                                    <input class="form-control" type="password" name="SO_PIN" required>
+                                </div>
+                                <!--User_PIN-->
+                                <div class="mb-3">
+                                    <label class="form-label">HSM Slot User PIN</label>
+                                    <input class="form-control" type="password" name="User_PIN" required>
+                                </div>
+                                <!--<div class="mb-3">
+                                    <label class="form-label">HSM Slot Name</label>
+                                    <input class="form-control" type="text" name="hsm_slot_name" required>
+                                </div>-->
+
+                        <!-- Modal Ayak -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <div class="row">
+            <div class="col-xl-6 col-xxl-5 d-flex">
+                <div class="w-100">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col mt-0">
+                                            <h5 class="card-title">Procenne PKI HSM Servis</h5>
+                                        </div>
+                                        {% if PKI_API == "Health" %}
+                                        <div class="col-auto">
+                                            <div class="stat text-primary">
+                                                <i class="align-middle" data-feather="globe"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <div class="col-auto">
+                                            <div class="stat text-danger">
+                                                <i class="align-middle" data-feather="globe"></i>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <h1></h1>
+                                    <div class="bg-primary text-center text-white">
+                                        <span>Health</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col mt-0">
+                                            <h5 class="card-title">Alarm Servis</h5>
+                                        </div>
+
+                                        <div class="col-auto">
+                                            <div class="stat text-primary">
+                                                <i class="align-middle" data-feather="mail"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h1></h1>
+                                    <div class="bg-primary text-center text-white">
+                                        <span>Health</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col mt-0">
+                                            <h5 class="card-title">DB Servis</h5>
+                                        </div>
+
+                                        <div class="col-auto">
+                                            <div class="stat text-primary">
+                                                <i class="align-middle" data-feather="database"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h1></h1>
+                                    <div class="bg-primary text-center text-white">
+                                        <span>Health</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-xxl-7">
+                <div class="card flex-fill w-100">
+                    <div class="card-header">
+
+                        <h5 class="card-title mb-0">Historic upcoming </h5>
+                    </div>
+                    <div class="card-body py-3">
+                        <div class="chart chart-sm">
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Certificate Name</th>
+                                    <th scope="col">Slot Label</th>
+                                    <th scope="col">Last Date</th>
+                                    <th scope="col">Remaining Day</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    {% for certificate in sorted_data %}
+                                  <tr>
+                                    <td>{{ certificate.Certificate_Name }}</td>
+                                    <td>{{ certificate.Slot_Label }}</td>
+                                    <td>{{ certificate.Last_Date }}</td>
+                                    <td>{% Remaining_Day_HTML certificate.Last_Date %}</td>
+                                  </tr>
+                                  {% endfor %}
+                                  
+                                </tbody>
+                              </table>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-xl-6 col-xl-5">
+                <div class="card flex-fill w-100">
+                    <div class="card-header">
+
+                        <h5 class="card-title mb-0">Expired Certificates</h5>
+                    </div>
+                    <div class="card-body py-3">
+                        <div class="chart chart-sm">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Slot ID</th>
+                                        <th scope="col">Certificate Name</th>
+                                        <th scope="col">Creation Date</th>
+                                        <th scope="col">Expired Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for certificate in expired_certs %}
+                                  <tr>
+                                    <td>{{ certificate.Slot_ID }}</td>
+                                    <td>{{ certificate.Certificate_Name }}</td>
+                                    <td>{{ certificate.First_Date }}</td>
+                                    <td>{{ certificate.Last_Date }}</td>
+                                  </tr>
+                                {% endfor %}
+                                  
+                                </tbody>
+                              </table>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-xl-6 col-xl-5">
+                <div class="card flex-fill w-100">
+                    <div class="card-header">
+
+                        <h5 class="card-title mb-0">Recently Created Certificates </h5>
+                    </div>
+                    <div class="card-body py-3">
+                        <div class="chart chart-sm">
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Tanent Name</th>
+                                    <th scope="col">Certificate Name</th>
+                                    <th scope="col">Create By</th>
+                                    <th scope="col">Creation Date</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    {% for The_End in combined_data %}
+                                  <tr>
+                                    <td>{{ The_End.MultiTenantName }}</td>
+                                    <td>{{ The_End.Certificate_Name }}</td>
+                                    <td>{{ The_End.created_by }}</td>
+                                    <td>{{ The_End.Data_Start }}</td>
+                                  </tr>
+                                  {% endfor %}
+                                  
+                                </tbody>
+                              </table>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>

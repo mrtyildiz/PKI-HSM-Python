@@ -1,0 +1,163 @@
+{% load Certificate_Validity %}
+<style>
+  .scrollable-table {
+      max-height: 500px; /* İstenilen yüksekliği ayarlayın */
+      overflow-y: auto;
+  }
+</style>
+<main class="content">
+    <div class="container-fluid p-0">
+      <div class="card-header d-flex justify-content-between">
+        <h1 class="h3 mb-3"><strong>Procenne</strong> ProCrypt HSM</h1>
+        
+      </div>
+        <div class="row">
+            
+            <div class="col-15">
+                
+                <div class="card flex-fill">
+                    
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title col-6">HSM Client Certificates</h5>
+                        <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CSR_Load">
+                            CRT Load
+                        </div>
+                        
+                    </div>
+                    {% include 'Modal/CRT_Key_load.html' %}
+                
+                    <div class="scrollable-table">
+                    <table class="table table-hover my-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Slot ID</th>
+                                <th>HSM Token Name</th>
+                                <th>Certificate Name</th>
+
+                                <th>Date Start</th>
+                                <th>Date End</th>
+                                <th>Validity Status</th>
+                                <th class="d-none d-md-table-cell">#</th>
+                            </tr>
+                            <p>{{ response }}</p>
+                        </thead>
+                        <tbody>
+                            {% for item in obje %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.Slot_ID }}</td>
+                                <td>{{ item.Token_Name }}</td>
+                                <td>{{ item.Certificate_Name }}</td>
+                                <td>{{ item.Data_Start }}</td>
+                                <td>{{ item.Data_End  }}</td>
+                                <td class="d-none d-md-table-cell"><span class="badge text-center bg-{% Date_Validity item.Data_End  %}">{% Date_Validity2 item.Data_End  %}</span></td>
+                                <td class="d-none d-md-table-cell"><div class="col">
+                                  <a class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#Info_Modal{{ item.id }}">Info</a>
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade  text-right" id="Info_Modal{{ item.id }}">
+                                      <div class="modal-dialog modal-dialog-centered" role="document">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">Certificate Info</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <p><b>Key Name :</b> {{ item.KeyName }}</p>
+                                              <p><b>Certificate Name :</b> {{ item.Certificate_Name }}</p>
+                                              <p><b>Certificate Expiry Date :</b> {{ item.Data_End  }}</p>
+                                              <p><b>Number of Days Remaining :</b> {% Date_Validity_Days item.Data_End  %}</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    <a class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#PEMDownloadModal{{ item.id }}">PEM File</a>
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="PEMDownloadModal{{ item.id }}">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">HSM PEM File Download</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <p>Do you want to download the PEM file?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                              <a href="{% url 'Public_Downloads_Client' item.id %}" class="btn btn-primary">PEM File Download</a>
+                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                     
+                                      <script>
+                                        // Dosya indirme bağlantısına tıklandığında modal'ı otomatik olarak kapatma
+                                        document.getElementById('download-link').addEventListener('click', function() {
+                                            var modalId = 'PEMDownloadModal{{ item.id }}'; // Modal'ın ID'sini belirleyin
+                                            var modal = new bootstrap.Modal(document.getElementById(modalId)); // Bootstrap modal nesnesini oluşturun
+                                            modal.hide(); // Modal'ı kapatma
+                                        });
+                                    </script>
+                                    <a class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#CRT_ClientDownloadModal{{ item.id }}">CRT File</a>
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="CRT_ClientDownloadModal{{ item.id }}">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">HSM PEM File Download</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <p>Do you want to download the Certificate file?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                              <a href="{% url 'CRT_Downloads_Client' item.id %}" class="btn btn-primary">CRT File Download</a>
+                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                    <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#ClientDeletedModal{{ item.id }}">Delete</a>
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="ClientDeletedModal{{ item.id }}">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">HSM PEM File Download</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <p>Are you sure you want to delete the Client Certificate ?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                              <a href="{% url 'CRT_Delete_Client' item.id %}" class="btn btn-danger">Delete</a>
+                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div></td>
+                            </tr>
+                            {% endfor %}
+
+                        
+                        </tbody>
+                    </table>
+                    
+                  </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+</main>

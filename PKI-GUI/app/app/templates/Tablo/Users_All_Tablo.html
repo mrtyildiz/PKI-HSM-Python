@@ -1,0 +1,586 @@
+<style>
+    .scrollable-table {
+        max-height: 500px; /* İstenilen yüksekliği ayarlayın */
+        overflow-y: auto;
+    }
+  </style>
+<main class="content">
+    <div class="container-fluid p-0">
+
+        <h1 class="h3 mb-3"><strong>Procenne</strong> ProCrypt HSM</h1>
+
+        <div class="row">
+            
+            <div class="col-15">
+                
+                <div class="card flex-fill">
+                    
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title col-6">Users Tablo</h5>
+                      <!-- Button Modal -->
+                    </div>
+                    {% if UserType == 'System_User' %}
+                    <div class="scrollable-table">
+                        <table class="table table-hover my-0">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>User Name</th>
+                                    <th>User Group</th>
+                                    <th>Last Login</th>
+                                    <th> </th>
+                                    <th class="d-none d-md-table-cell">#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for items in users_all %}
+                                <tr>
+                                    <td>{{ items.id }}</td>
+                                    <td>{{ items.user.username }}</td>
+                                    <td>{{ items.USerType }}</td>
+                                    <td>{{ items.user.last_login }}</td>
+                                    <td></td>
+                                    <td class="d-none d-md-table-cell"><div class="col">
+                                        <!-- Delete Modal -->
+                                        <a class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#MultiFactor{{ items.id }}">MultiFactor</a>
+                                        
+                                        <!-- Modal -->
+                                        
+                                        <div class="modal fade" id="MultiFactor{{ items.id }}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form method="POST" action="{% url 'Users_All_Update' id=items.id %}">
+                                                    {% csrf_token %}
+                                                    <!-- Modal Başlık -->
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">MultiFactor features of the {{ items.user.username }} user</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    
+                                                                                                    <!-- Modal İçerik -->
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            
+                                                                            <th scope="col">Feature name</th>
+                                                                            <th scope="col">
+                                                                                <input type="checkbox" id="select-all-checkbox{{items.user.id}}">
+                                                                                <label for="select-all-checkbox{{items.user.id}}">Select All</label>
+                                                                            </th>
+                                                                            <script>
+                                                                                document.addEventListener("DOMContentLoaded", function () {
+                                                                                    // Get the "Select All" checkbox
+                                                                                    var selectAllCheckbox = document.getElementById("select-all-checkbox{{items.user.id}}");
+                                                                            
+                                                                                    if (selectAllCheckbox) {
+                                                                                        // Get all the checkboxes inside the table body
+                                                                                        var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+                                                                            
+                                                                                        // Add a change event listener to the "Select All" checkbox
+                                                                                        selectAllCheckbox.addEventListener("change", function () {
+                                                                                            // Loop through each checkbox and set its checked property to match the "Select All" checkbox
+                                                                                            checkboxes.forEach(function (checkbox) {
+                                                                                                checkbox.checked = selectAllCheckbox.checked;
+                                                                                            });
+                                                                                        });
+                                                                            
+                                                                                        // Add change event listeners to individual checkboxes
+                                                                                        checkboxes.forEach(function (checkbox) {
+                                                                                            checkbox.addEventListener("change", function () {
+                                                                                                // If any checkbox is unchecked, uncheck the "Select All" checkbox
+                                                                                                if (!checkbox.checked) {
+                                                                                                    selectAllCheckbox.checked = false;
+                                                                                                }
+                                                                                            });
+                                                                                        });
+                                                                                    }
+                                                                                });
+                                                                            </script>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <!-- Pool_create -->
+                                                                        {% for multifactor in multifactor_list %}
+                                                                            {% if items.user.id == multifactor.user_factor.id %}
+                                                                                <tr>
+                                                                                    <td><label for="Pool_create">HSM pool creation process</label></td>
+                                                                                    {% if multifactor.Pool_create == 'Disable' %}
+                                                                                        <td><input type="checkbox" name="Pool_create"></td>
+                                                                                    {% else %}
+                                                                                    <td><input type="checkbox" name="Pool_create" checked></td>
+                                                                                    {% endif %}
+                                                                                </tr>
+                                                                            {% else %}
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                        <!-- Pool_delete -->
+                                                                        {% for multifactor in multifactor_list %}
+                                                                            {% if items.user.id == multifactor.user_factor.id %}
+                                                                                <tr>
+                                                                                    <td><label for="Pool_delete">Delete HSM pool</label></td>
+                                                                                    {% if multifactor.Pool_delete == 'Disable' %}
+                                                                                        <td><input type="checkbox" name="Pool_delete"></td>
+                                                                                    {% else %}
+                                                                                    <td><input type="checkbox" name="Pool_delete" checked></td>
+                                                                                    {% endif %}
+                                                                                </tr>
+                                                                            {% else %}
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                        
+                                                                        <!-- Pool_Upload -->
+                                                                        {% for multifactor in multifactor_list %}
+                                                                            {% if items.user.id == multifactor.user_factor.id %}
+                                                                                <tr>
+                                                                                    <td><label for="Pool_Upload">Update HSM Pool</label></td>
+                                                                                    {% if multifactor.Pool_Upload == 'Disable' %}
+                                                                                        <td><input type="checkbox" name="Pool_Upload"></td>
+                                                                                    {% else %}
+                                                                                    <td><input type="checkbox" name="Pool_Upload" checked></td>
+                                                                                    {% endif %}
+                                                                                </tr>
+                                                                            {% else %}
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                        <!-- Pool_Active -->
+                                                                        {% for multifactor in multifactor_list %}
+                                                                        {% if items.user.id == multifactor.user_factor.id %}
+                                                                            <tr>
+                                                                                <td><label for="Pool_Active">Activation of the HSM pool</label></td>
+                                                                                {% if multifactor.Pool_Active == 'Disable' %}
+                                                                                    <td><input type="checkbox" name="Pool_Active"></td>
+                                                                                {% else %}
+                                                                                <td><input type="checkbox" name="Pool_Active" checked></td>
+                                                                                {% endif %}
+                                                                            </tr>
+                                                                        {% else %}
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                    <!-- Slot_List -->
+                                                                    {% for multifactor in multifactor_list %}
+                                                                    {% if items.user.id == multifactor.user_factor.id %}
+                                                                        <tr>
+                                                                            <td><label for="Slot_List">Slot Creation Process</label></td>
+                                                                            {% if multifactor.Slot_List == 'Disable' %}
+                                                                                <td><input type="checkbox" name="Slot_List"></td>
+                                                                            {% else %}
+                                                                            <td><input type="checkbox" name="Slot_List" checked></td>
+                                                                            {% endif %}
+                                                                        </tr>
+                                                                    {% else %}
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                    <!-- Slot_delete -->
+                                                                    {% for multifactor in multifactor_list %}
+                                                                    {% if items.user.id == multifactor.user_factor.id %}
+                                                                        <tr>
+                                                                            <td><label for="Slot_delete">Slot Deletion</label></td>
+                                                                            {% if multifactor.Slot_delete == 'Disable' %}
+                                                                                <td><input type="checkbox" name="Slot_delete"></td>
+                                                                            {% else %}
+                                                                            <td><input type="checkbox" name="Slot_delete" checked></td>
+                                                                            {% endif %}
+                                                                        </tr>
+                                                                    {% else %}
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                    <!-- hsm_slot_update -->
+                                                                    {% for multifactor in multifactor_list %}
+                                                                    {% if items.user.id == multifactor.user_factor.id %}
+                                                                        <tr>
+                                                                            <td><label for="hsm_slot_update">Slot Update Process</label></td>
+                                                                            {% if multifactor.hsm_slot_update == 'Disable' %}
+                                                                                <td><input type="checkbox" name="hsm_slot_update"></td>
+                                                                            {% else %}
+                                                                            <td><input type="checkbox" name="hsm_slot_update" checked></td>
+                                                                            {% endif %}
+                                                                        </tr>
+                                                                    {% else %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                <!-- CA_CRT -->
+                                                                {% for multifactor in multifactor_list %}
+                                                                {% if items.user.id == multifactor.user_factor.id %}
+                                                                    <tr>
+                                                                        <td><label for="CA_CRT">CA Certificate Creation process</label></td>
+                                                                        {% if multifactor.CA_CRT == 'Disable' %}
+                                                                            <td><input type="checkbox" name="CA_CRT"></td>
+                                                                        {% else %}
+                                                                        <td><input type="checkbox" name="CA_CRT" checked></td>
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                {% else %}
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                                <!-- CA_CRT_Delete -->
+                                                                {% for multifactor in multifactor_list %}
+                                                                {% if items.user.id == multifactor.user_factor.id %}
+                                                                    <tr>
+                                                                        <td><label for="CA_CRT_Delete">CA Certificate deletion</label></td>
+                                                                        {% if multifactor.CA_CRT_Delete == 'Disable' %}
+                                                                            <td><input type="checkbox" name="CA_CRT_Delete"></td>
+                                                                        {% else %}
+                                                                        <td><input type="checkbox" name="CA_CRT_Delete" checked></td>
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                {% else %}
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                                <!-- CSR_HSM_CRT_Request -->
+                                                                {% for multifactor in multifactor_list %}
+                                                                {% if items.user.id == multifactor.user_factor.id %}
+                                                                    <tr>
+                                                                        <td><label for="CSR_HSM_CRT_Request">CSR File Signing process</label></td>
+                                                                        {% if multifactor.CSR_HSM_CRT_Request == 'Disable' %}
+                                                                            <td><input type="checkbox" name="CSR_HSM_CRT_Request"></td>
+                                                                        {% else %}
+                                                                        <td><input type="checkbox" name="CSR_HSM_CRT_Request" checked></td>
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                {% else %}
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                                <!-- Valid_Load_Request -->
+                                                                {% for multifactor in multifactor_list %}
+                                                                {% if items.user.id == multifactor.user_factor.id %}
+                                                                    <tr>
+                                                                        <td><label for="Valid_Load_Request">Certificate validation process</label></td>
+                                                                        {% if multifactor.Valid_Load_Request == 'Disable' %}
+                                                                            <td><input type="checkbox" name="Valid_Load_Request"></td>
+                                                                        {% else %}
+                                                                        <td><input type="checkbox" name="Valid_Load_Request" checked></td>
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                {% else %}
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                                <!-- crt_load_client -->
+                                                                {% for multifactor in multifactor_list %}
+                                                                {% if items.user.id == multifactor.user_factor.id %}
+                                                                    <tr>
+                                                                        <td><label for="crt_load_client">Client Certificate HSM Load</label></td>
+                                                                        {% if multifactor.crt_load_client == 'Disable' %}
+                                                                            <td><input type="checkbox" name="crt_load_client"></td>
+                                                                        {% else %}
+                                                                        <td><input type="checkbox" name="crt_load_client" checked></td>
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                {% else %}
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                                <!-- CRT_Delete_Client -->
+                                                                {% for multifactor in multifactor_list %}
+                                                                {% if items.user.id == multifactor.user_factor.id %}
+                                                                    <tr>
+                                                                        <td><label for="CRT_Delete_Client">Client Certificate Deletion process</label></td>
+                                                                        {% if multifactor.CRT_Delete_Client == 'Disable' %}
+                                                                            <td><input type="checkbox" name="CRT_Delete_Client"></td>
+                                                                        {% else %}
+                                                                        <td><input type="checkbox" name="CRT_Delete_Client" checked></td>
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                {% else %}
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                                <!-- Keys_Create -->
+                                                                {% for multifactor in multifactor_list %}
+                                                                {% if items.user.id == multifactor.user_factor.id %}
+                                                                    <tr>
+                                                                        <td><label for="Keys_Create">Key creation </label></td>
+                                                                        {% if multifactor.Keys_Create == 'Disable' %}
+                                                                            <td><input type="checkbox" name="Keys_Create"></td>
+                                                                        {% else %}
+                                                                        <td><input type="checkbox" name="Keys_Create" checked></td>
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                {% else %}
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                                <!-- Keys_Delete -->
+                                                                {% for multifactor in multifactor_list %}
+                                                                {% if items.user.id == multifactor.user_factor.id %}
+                                                                    <tr>
+                                                                        <td><label for="Keys_Delete">Key Deletion</label></td>
+                                                                        {% if multifactor.Keys_Delete == 'Disable' %}
+                                                                            <td><input type="checkbox" name="Keys_Delete"></td>
+                                                                        {% else %}
+                                                                        <td><input type="checkbox" name="Keys_Delete" checked></td>
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                {% else %}
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                    <!-- Modal Ayak -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                    </div>
+                                                </form>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <a class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#UserGroups{{ items.id }}">User Group</a>
+                                        <div class="modal fade" id="UserGroups{{ items.id }}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form method="POST" action="{% url 'UserTypeUpdate' id=items.id %}">
+                                                    {% csrf_token %}
+                                                    <!-- Modal Başlık -->
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">MultiFactor features of the {{ items.user.username }} user</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <h1></h1>
+                                                    <div class="form-floating">
+                                                        <select class="form-select" name="UserType" id="floatingSelectGrid" aria-label="Floating label select example">
+                                                            
+                                                            <option value="System_User">System_User</option>
+                                                            <option value="Operator_User">Operator_User</option>
+                                                            <option value="Client_User">Client_User</option>
+                                                            
+                                                        </select>
+                                                        <label for="floatingSelectGrid">User Type</label>
+                                                    </div>
+                                                    <h1></h1>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                    </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                    {% elif UserType == 'Operator_User' %}
+                    <div class="scrollable-table">
+                        <table class="table table-hover my-0">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>User Name</th>
+                                    <th>User Group</th>
+                                    <th>Last Login</th>
+                                    <th> </th>
+                                    <th class="d-none d-md-table-cell">#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for items in users_all %}
+                                <tr>
+                                    <td>{{ items.id }}</td>
+                                    <td>{{ items.user.username }}</td>
+                                    <td>{{ items.USerType }}</td>
+                                    <td>{{ items.user.last_login }}</td>
+                                    <td></td>
+                                    <td class="d-none d-md-table-cell"><div class="col">
+                                        <!-- Delete Modal -->
+                                        <a class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#MultiFactor{{ items.id }}">MultiFactor</a>
+                                        
+                                        <!-- Modal -->
+                                        
+                                        <div class="modal fade" id="MultiFactor{{ items.id }}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form method="POST" action="{% url 'Users_All_Update' id=items.id %}">
+                                                    {% csrf_token %}
+                                                    <!-- Modal Başlık -->
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">MultiFactor features of the {{ items.user.username }} user</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    
+                                                                                                    <!-- Modal İçerik -->
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th scope="col">Feature name</th>
+                                                                            <th scope="col">
+                                                                                <input type="checkbox" id="select-all-checkbox{{items.user.id}}">
+                                                                                <label for="select-all-checkbox{{items.user.id}}">Select All</label>
+                                                                            </th>
+                                                                            <script>
+                                                                                document.addEventListener("DOMContentLoaded", function () {
+                                                                                    // Get the "Select All" checkbox
+                                                                                    var selectAllCheckbox = document.getElementById("select-all-checkbox{{items.user.id}}");
+                                                                            
+                                                                                    if (selectAllCheckbox) {
+                                                                                        // Get all the checkboxes inside the table body
+                                                                                        var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+                                                                            
+                                                                                        // Add a change event listener to the "Select All" checkbox
+                                                                                        selectAllCheckbox.addEventListener("change", function () {
+                                                                                            // Loop through each checkbox and set its checked property to match the "Select All" checkbox
+                                                                                            checkboxes.forEach(function (checkbox) {
+                                                                                                checkbox.checked = selectAllCheckbox.checked;
+                                                                                            });
+                                                                                        });
+                                                                            
+                                                                                        // Add change event listeners to individual checkboxes
+                                                                                        checkboxes.forEach(function (checkbox) {
+                                                                                            checkbox.addEventListener("change", function () {
+                                                                                                // If any checkbox is unchecked, uncheck the "Select All" checkbox
+                                                                                                if (!checkbox.checked) {
+                                                                                                    selectAllCheckbox.checked = false;
+                                                                                                }
+                                                                                            });
+                                                                                        });
+                                                                                    }
+                                                                                });
+                                                                            </script>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <!-- Keys_Create -->
+                                                                        {% for multifactor in multifactor_list %}
+                                                                            {% if items.user.id == multifactor.user_factor.id %}
+                                                                                <tr>
+                                                                                    <td><label for="Keys_Create">Key creation </label></td>
+                                                                                    {% if multifactor.Keys_Create == 'Disable' %}
+                                                                                        <td><input type="checkbox" name="Keys_Create"></td>
+                                                                                    {% else %}
+                                                                                    <td><input type="checkbox" name="Keys_Create" checked></td>
+                                                                                    {% endif %}
+                                                                                </tr>
+                                                                            {% else %}
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    
+                                                                        <!-- Valid_Load_Request -->
+                                                                        {% for multifactor in multifactor_list %}
+                                                                            {% if items.user.id == multifactor.user_factor.id %}
+                                                                                <tr>
+                                                                                    <td><label for="Valid_Load_Request">Certificate validation process</label></td>
+                                                                                    {% if multifactor.Valid_Load_Request == 'Disable' %}
+                                                                                        <td><input type="checkbox" name="Valid_Load_Request"></td>
+                                                                                    {% else %}
+                                                                                    <td><input type="checkbox" name="Valid_Load_Request" checked></td>
+                                                                                    {% endif %}
+                                                                                </tr>
+                                                                            {% else %}
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    
+                                                                
+                                                                        <!-- crt_load_client -->
+                                                                        {% for multifactor in multifactor_list %}
+                                                                            {% if items.user.id == multifactor.user_factor.id %}
+                                                                                <tr>
+                                                                                    <td><label for="crt_load_client">Certificate Installation process</label></td>
+                                                                                    {% if multifactor.crt_load_client == 'Disable' %}
+                                                                                        <td><input type="checkbox" name="crt_load_client"></td>
+                                                                                    {% else %}
+                                                                                    <td><input type="checkbox" name="crt_load_client" checked></td>
+                                                                                    {% endif %}
+                                                                                </tr>
+                                                                            {% else %}
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                        <!-- CSR_HSM_CRT_Request -->
+                                                                        {% for multifactor in multifactor_list %}
+                                                                            {% if items.user.id == multifactor.user_factor.id %}
+                                                                                <tr>
+                                                                                    <td><label for="CSR_HSM_CRT_Request">CSR File Signing process</label></td>
+                                                                                    {% if multifactor.CSR_HSM_CRT_Request == 'Disable' %}
+                                                                                        <td><input type="checkbox" name="CSR_HSM_CRT_Request"></td>
+                                                                                    {% else %}
+                                                                                    <td><input type="checkbox" name="CSR_HSM_CRT_Request" checked></td>
+                                                                                    {% endif %}
+                                                                                </tr>
+                                                                            {% else %}
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                        <!-- CA_CRT_Delete -->
+                                                                    
+                                                                        <!-- Keys_Delete -->
+                                                                        {% for multifactor in multifactor_list %}
+                                                                            {% if items.user.id == multifactor.user_factor.id %}
+                                                                                <tr>
+                                                                                    <td><label for="Keys_Delete">Key Deletion</label></td>
+                                                                                    {% if multifactor.Keys_Delete == 'Disable' %}
+                                                                                        <td><input type="checkbox" name="Keys_Delete"></td>
+                                                                                    {% else %}
+                                                                                    <td><input type="checkbox" name="Keys_Delete" checked></td>
+                                                                                    {% endif %}
+                                                                                </tr>
+                                                                            {% else %}
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    
+                                                                    
+                                                                        
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                    <!-- Modal Ayak -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                    </div>
+                                                </form>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+                    
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+</main>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the "Select All" checkbox
+        var selectAllCheckbox = document.getElementById("select-all-checkbox");
+
+        // Get all the checkboxes inside the table body
+        var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+
+        // Add a change event listener to the "Select All" checkbox
+        selectAllCheckbox.addEventListener("change", function () {
+            // Loop through each checkbox and set its checked property to match the "Select All" checkbox
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+        });
+
+        // Add change event listeners to individual checkboxes
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener("change", function () {
+                // If any checkbox is unchecked, uncheck the "Select All" checkbox
+                if (!checkbox.checked) {
+                    selectAllCheckbox.checked = false;
+                }
+            });
+        });
+    });
+</script>

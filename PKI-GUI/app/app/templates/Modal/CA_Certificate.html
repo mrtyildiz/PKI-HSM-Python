@@ -1,0 +1,65 @@
+        <!-- Modal -->
+        <div class="modal fade" id="CACertificateCreate">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST">
+					{% csrf_token %}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne CA Create</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+                            
+                            <div class="form-floating">
+                                <select class="form-select" name="Token_Name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                    {% for HSM_Name in HSM_All_object %}
+                                        <option value="{{ HSM_Name.TokenName }}">{{ HSM_Name.TokenName }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="floatingSelectGrid">Token Name</label>
+                            </div>
+                            
+							<div class="mb-3">
+								<label class="form-label">Certificate Name</label>
+								<input class="form-control" type="text" name="CertificateName" required>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">Common Name</label>
+								<input class="form-control" type="text" name="CommonName" required>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">OrganizationName</label>
+								<input class="form-control" type="text" name="OrganizationName" required>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">Country Name</label>
+								<input class="form-control" type="text" name="CountryName" required>
+							</div>
+                            <div class="mb-3">
+								<label class="form-label">Key Name</label>
+								<input class="form-control" type="text" name="KeyName" required>
+							</div>
+							<div class="form-floating">
+                                <select class="form-select" name="KeyBIT" id="floatingSelectGrid" aria-label="Floating label select example">
+                                    <option value="1024">1024</option>
+                                    <option value="2048">2048</option>
+                                    <option value="3072">3072</option>
+                                    <option value="4096">4096</option>
+                                </select>
+                                <label for="floatingSelectGrid">Key BIT</label>
+                            </div>
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+				</form>
+                    
+                </div>
+            </div>
+        </div>

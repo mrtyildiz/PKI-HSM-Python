@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html lang="en">
+{% load Profile_Tag %}
+{% include 'Merger/head.html' %}
+{% load static %}
+
+
+<body>
+	<div class="wrapper">
+
+		{% include 'Merger/navbar.html' %}
+    {% include 'Modal/MultiFactor.html' %}
+		<div class="main">
+			
+			{% include 'Merger/Users-navbar.html' %}
+			<section style="background-color: #eee;">
+                <div class="container py-5">
+                  
+              
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="card mb-4">
+                        <div class="card-body text-center">
+                          <img src="{% static 'img/photos/ava3.webp' %}" alt="avatar"
+                            class="rounded-circle img-fluid" style="width: 150px;">
+                          <h5 class="my-3">{{ request.user.username }}</h5>
+                         
+                        </div>
+                      </div>
+                      <div class="card mb-4">
+                        <div class="card-body text-right">
+                          <!--Two Factor -->
+                          <!--<p class="mb-4"> Enable the Multi factor feature : <span></span><button type="button" class="btn btn-{% TwoStatus_reverse user_profile.MulfiFactor %} btn-sm"  data-bs-toggle="modal" data-bs-target="#multiModal">{% Reverse user_profile.MulfiFactor %}</button></p> -->
+                          <p class="mb-4"> Enable the two factor feature : <span></span><button type="button" class="btn btn-{% TwoStatus_reverse user_profile.TwoFactor %} btn-sm"  data-bs-toggle="modal" data-bs-target="#enableModal">{% Reverse user_profile.TwoFactor %}</button></p>
+                          <p class="mb-4"> Profile Edit : <span></span><button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#profile_edit">Edit</button></p>                          <!--
+                            Enable
+                          -->
+                          <div class="card-body text-center">
+                            <img src="{% static 'img/QR_User/'|add:user_profile.QR_Path %}" alt="QR" style="width: 250px;">
+                            </div>
+                        </div>
+                        {% include 'Modal/MessageModal.html' %}
+                        <div class="card-body text-right">
+                          <!-- Modal -->
+                          <div class="card-body">
+                            <div class="text-right">
+                            <div class="modal fade" id="profile_edit" tabindex="-1" aria-labelledby="multiModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                  <form method="POST">
+                                    {% csrf_token %}
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="multiModalLabel">Profile Edit</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+
+                                  <div class="modal-body">
+                                    <div class="mb-3">
+                                      <label class="form-label">First Name</label>
+                                      <input class="form-control" type="text" name="first_Name" value={{ request.user.first_name }} required>
+                                    </div>
+                                    <div class="mb-3">
+                                      <label class="form-label">Last Name</label>
+                                      <input class="form-control" type="text" name="last_name" value={{ request.user.last_name }} required>
+                                    </div>
+                                    <div class="mb-3">
+                                      <label class="form-label">Email</label>
+                                      <input class="form-control" type="email" name="email" value={{ request.user.email }} required>
+                                    </div>
+                                    <div class="mb-3">
+                                      <label class="form-label">Telephone</label>
+                                      <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" maxlength="12"  oninput="formatPhoneNumber(this)" value={{ user_profile.telephone_number }} required>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                  </div>
+                                  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+										<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+										<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+										<!-- JavaScript Kodları -->
+										<script>
+										function formatPhoneNumber(input) {
+											// Sadece sayıları al
+											var phoneNumber = input.value.replace(/\D/g, '');
+
+											// Uzunluğu kontrol et
+											if (phoneNumber.length === 10) {
+											// Formata uydur ve inputa ekle
+											input.value = phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+											}
+										}
+										</script>
+                                </form>
+                                </div>
+                              </div>
+                            </div>
+                          </diV>
+
+                          <div class="modal fade" id="multiModal" tabindex="-1" aria-labelledby="multiModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                              <div class="modal-content">
+                                <form method="POST" enctype="multipart/form-data" action="{% url 'Multi_enable' user_profile.id %}">
+                                  {% csrf_token %}
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="multiModalLabel">Multi Factor</h5>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <p>{% MultiStatus_message user_profile.MulfiFactor %}</p>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-{% TwoStatus_reverse user_profile.MulfiFactor %}">{% Reverse user_profile.MulfiFactor %}</button>
+                                </div>
+                              </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                          <!--Two Factor -->
+                          
+                          <!--
+                            Enable
+                          -->
+                          <!-- Modal -->
+                          <div class="modal fade" id="enableModal" tabindex="-1" aria-labelledby="enableModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                              <div class="modal-content">
+                                <form method="POST" enctype="multipart/form-data" action="{% url 'profile_enable' user_profile.id %}">
+                                  {% csrf_token %}
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="enableModalLabel">Tow Factor</h5>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <p>{% TwoStatus_message user_profile.TwoFactor %}</p>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-{% TwoStatus_reverse user_profile.TwoFactor %}">{% Reverse user_profile.TwoFactor %}</button>
+                                </div>
+                              </form>
+                              </div>
+                            </div>
+                          </div>
+                          
+                        </div>
+                      </div>
+                      
+                    </div>
+                    <div class="col-lg-8">
+                      <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                  <p class="mb-0">User Name</p>
+                                </div>
+                                <div class="col-sm-9">
+                                  <p class="text-muted mb-0">{{ request.user.username }}</p>
+                                </div>
+                              </div>
+                            <hr>
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <p class="mb-0">Full Name</p>
+                            </div>
+                            <div class="col-sm-9">
+                              <p class="text-muted mb-0">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <p class="mb-0">Email</p>
+                            </div>
+                            <div class="col-sm-9">
+                              <p class="text-muted mb-0">{{ request.user.email }}</p>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <p class="mb-0">Telephone Number</p>
+                            </div>
+                            <div class="col-sm-9">
+                              <p class="text-muted mb-0">{{ user_profile.telephone_number }}</p>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <p class="mb-0">User Type</p>
+                            </div>
+                            <div class="col-sm-9">
+                              <p class="text-muted mb-0">{{ user_profile.UserType }}</p>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <p class="mb-0">Two Factor Feature</p>
+                            </div>
+                            <div class="col-sm-9">
+                              <p class="text-muted mb-0"><span class="badge bg-{% TwoStatus user_profile.TwoFactor %}">{{ user_profile.TwoFactor }}</span></p>
+                            </div>
+                          </div>
+                          <hr>
+                          <!--<div class="row">
+                            <div class="col-sm-3">
+                              <p class="mb-0">Multi Factor Feature</p>
+                            </div>
+                            <div class="col-sm-9">
+                              <p class="text-muted mb-0"><span class="badge bg-{% TwoStatus user_profile.MulfiFactor %}">{{ user_profile.MulfiFactor }}</span></p>
+                            </div>
+                          </div>-->
+                        </div>
+                      </div>
+                      
+                      
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+			{% include 'Merger/footer.html' %}
+		</div>
+	</div>
+
+	<script src="{% static 'js/app.js' %}"></script>
+
+
+</body>

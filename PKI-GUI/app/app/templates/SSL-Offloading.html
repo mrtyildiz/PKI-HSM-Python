@@ -1,0 +1,21 @@
+{% load Slot_List_Tag %}
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'Merger/head.html' %}
+{% load static %}
+<body>
+	<div class="wrapper">
+
+		{% include 'Merger/navbar.html' %}
+
+	<div class="main">
+			{% include 'Merger/Users-navbar.html' %}
+			{% include 'Tablo/ssl-rules-tablo.html' %}
+			{% include 'Merger/footer.html' %}
+	</div>
+
+	<script src="{% static 'js/app.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="FileLogShow">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <form method="POST">
+            {% csrf_token %}
+            <!-- Modal Başlık -->
+            <input type="hidden" name="filename" value="{{ Log.file_name }}">
+            <div class="modal-header">
+                <h4 class="modal-title">Procenne Log</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <!-- Modal İçerik -->
+            <div class="modal-body">
+                <div class="scrollable-table">
+                  <p>File Load</p>
+                <!--<table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">File Name</th>
+                        <th scope="col">First Date</th>
+                        <th scope="col">Last Date</th>
+                        <th scope="col">Button</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for Log in Logs_File %}
+                      <tr>
+                        <th>{{ Log.file_name }}</th>
+                        <td>{{ Log.First_date }}</td>
+                        <td>{{ Log.Last_date }}</td>
+                        <td>***</td>
+                      </tr>
+                    {% endfor %}
+                      
+                    </tbody>
+                  </table>-->
+                </div>
+            </div>
+            
+            <!-- Modal Ayak -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+
+        </form>
+            
+        </div>
+    </div>
+</div>

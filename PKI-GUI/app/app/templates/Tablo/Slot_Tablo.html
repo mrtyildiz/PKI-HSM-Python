@@ -1,0 +1,148 @@
+{% load Slot_List_Tag %}
+<style>
+    .scrollable-table {
+        max-height: 500px; /* İstenilen yüksekliği ayarlayın */
+        overflow-y: auto;
+    }
+  </style>
+<main class="content">
+    <div class="container-fluid p-0">
+
+        <h1 class="h3 mb-3"><strong>Procenne</strong> ProCrypt HSM</h1>
+
+        <div class="row">
+
+            <div class="col-15">
+
+                <div class="card flex-fill">
+
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title col-6">HSM Pool</h5>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#HSMTokenModal">
+                            Create
+                          </button>
+
+                          <!-- Second Modal -->
+                          
+
+                          <script>
+                            $(document).ready(function () {
+                              $('#HSMNewToken').on('show.bs.modal', function (e) {
+                                // This event fires immediately when the show instance method is called
+                                $('#HSMNewToken2').modal('hide');
+                              });
+
+                              $('#HSMNewToken2').on('show.bs.modal', function (e) {
+                                // This event fires immediately when the show instance method is called
+                                $('#HSMNewToken').modal('hide');
+                              });
+                            });
+                          </script>
+
+                    </div>
+
+                {% include 'Modal/HSM_Token_Create.html' %}
+                <div class="scrollable-table">
+                    <table class="table table-hover my-0">
+                        <thead>
+                            <tr>
+                                <th>HSM Pool Name</th>
+                                <th>HSM Token Name</th>
+                                <th>Token Slot PIN</th>
+                                <th>Token health</th>
+                                <th class="d-none d-md-table-cell">#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in HSM_All_object %}
+                            <tr>
+                                <td>{{ item.HSM_Pool_Name }}</td>
+                                <td>{{ item.TokenName }}</td>
+                                <td>{% slot_PIN_MD5 item.UserPIN %}</td>
+
+                                <td><span class="badge bg-{% TokenDangerSlot item.TokenName %}">{% TokenCheckSlot item.TokenName %}</span></td>
+                                <td class="d-none d-md-table-cell"><div class="col">
+                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#HSMUpdateModal{{ item.id }}">Edit</a>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="HSMUpdateModal{{ item.id }}">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                            <form method="POST" action="{% url 'hsm_slot_update' id=item.id %}">
+                                                {% csrf_token %}
+                                                <!-- Modal Başlık -->
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Procenne HSM Pool</h4>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+
+                                                <!-- Modal İçerik -->
+                                                <div class="modal-body">
+                                                    <div class="form-floating">
+                                                        <select class="form-select" name="pool_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                                            {% for HSM_Name in HSM_Name %}
+                                                                <option value="{{ HSM_Name.HSM_Pool_Name }}">{{ HSM_Name.HSM_Pool_Name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <label for="floatingSelectGrid">Select HSM Type</label>
+                                                    </div>
+
+                                                        <div class="mb-3">
+                                                            <label class="form-label">HSM Slot Name</label>
+                                                            <input class="form-control" type="text" name="hsm_slot_name" value={{ item.TokenName }}>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Token Slot PIN</label>
+                                                            <input class="form-control" type="password" name="hsm_slot_pin">
+                                                        </div>
+
+
+                                                </div>
+
+                                                <!-- Modal Ayak -->
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </form>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#SlotDeleteModal{{ item.id }}">Delete</a>
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="SlotDeleteModal{{ item.id }}">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">HSM Slot Delete</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <p>Are you sure you want to delete the HSM Slot named {{ item.TokenName }} ?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                              <a href="/Slot_List/{{ item.id }}" class="btn btn-danger">Delete</a>
+
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div></td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</main>

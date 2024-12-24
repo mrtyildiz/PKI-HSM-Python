@@ -1,0 +1,59 @@
+        <!-- Modal -->
+        <div class="modal fade" id="CRTCreate">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST" action="{% url 'csr_create' %}">
+					{% csrf_token %}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne HSM Token</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+                            
+                            <div class="form-floating">
+                                <select class="form-select" name="Keys_Name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                    {% for keys in keys_list %}
+                                        <option value="{{ keys.Keys_Name }}">{{ keys.Keys_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="floatingSelectGrid">Select Keys</label>
+                            </div>
+
+							<div class="mb-3">
+								<label class="form-label">Country</label>
+								<input class="form-control" type="text" name="Country" required>
+							</div>
+                            <div class="mb-3">
+								<label class="form-label">City</label>
+								<input class="form-control" type="text" name="City" required>
+							</div>
+                            <div class="mb-3">
+								<label class="form-label">Company</label>
+								<input class="form-control" type="text" name="Company" required>
+							</div>
+                            <div class="mb-3">
+								<label class="form-label">Company Name</label>
+								<input class="form-control" type="text" name="Company_Name" required>
+							</div>
+                            <div class="mb-3">
+								<label class="form-label">Company ID</label>
+								<input class="form-control" type="text" name="Company_ID" required>
+							</div>
+                    
+      
+							
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+				</form>
+                    
+                </div>
+            </div>
+        </div>

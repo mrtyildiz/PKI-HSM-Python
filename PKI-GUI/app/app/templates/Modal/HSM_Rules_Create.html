@@ -1,0 +1,56 @@
+        <!-- Modal -->
+        <div class="modal fade" id="RulesModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST">
+					{% csrf_token %}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne HSM Rules</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">HSM Certificate Rule Name</label>
+                            <input type="text" class="form-control" name="hsm_certificate_rule_name" required>
+                        </div>
+                            <div class="form-floating">
+                                <select class="form-select" name="hsm_certificate_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                {% for HSM_Certificate in obje %}
+                                <option value="{{HSM_Certificate}}">{{HSM_Certificate.Certificate_Name}}</option>
+                                {% endfor %}
+                                </select>
+                                <label for="floatingSelectGrid">Select HSM Certificate Name</label>
+                            </div>
+                          
+
+                            <div class="row">
+                                <div class="mb-3">
+                                  <label for="integerInput">Warning day:</label>
+                                  <input type="number" class="form-control" name="certificate_stay_days" placeholder="When there are as many days left as the given value, a warning mail is sent" required>
+                                </div>
+                              </div>
+                            <div class="form-floating">
+                                <select class="form-select" name="hsm_certificate_user_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                {% for User in User_Name %}
+                                <option value="{{User}}">{{User}}</option>
+                                {% endfor %}
+                                </select>
+                                <label for="floatingSelectGrid">Person to Send</label>
+                            </div>
+							
+						
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+				</form>
+                    
+                </div>
+            </div>
+        </div>

@@ -1,0 +1,51 @@
+        <!-- Modal -->
+        <div class="modal fade" id="CSRToCRT">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST" enctype="multipart/form-data" action="{% url 'csr_upload' %}">
+					{% csrf_token %}
+                    {{ form.as_p }}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne CSR To CRT Convert</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">CSR File Upload</label>
+                            <input class="form-control" name="csr_file" type="file" id="formFile" required>
+                            
+                          </div>
+                            <div class="form-floating">
+                                
+                                <select class="form-select" name="crt_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                    {% for item in obje %}
+                                        <option value="{{ item.Certificate_Name }}">{{ item.Certificate_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="floatingSelectGrid">CA Certificate Name </label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Life Time</label>
+                                <input class="form-control" type="number" name="lifetime" required>
+                            </div>
+							<div class="mb-3">
+								<label class="form-label">Company Name</label>
+								<input class="form-control" type="text" name="Company_name" required>
+							</div>
+						
+							
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+				</form>
+                    
+                </div>
+            </div>
+        </div>

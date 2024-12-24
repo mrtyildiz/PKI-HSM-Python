@@ -1,0 +1,42 @@
+        <!-- Modal -->
+        <div class="modal fade" id="Valid_Key_CRT_Modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST" enctype="multipart/form-data" action="{% url 'Valid_Key_CRT' %}">
+					{% csrf_token %}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne CRT Load</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+                        <div class="form-floating">
+                                
+                            <select class="form-select" name="Keys_Name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                {% for item in keys_list %}
+                                    <option value="{{ item.Keys_Name }}">{{ item.Keys_Name }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="floatingSelectGrid">Key Name </label>
+                        </div>
+                        <p></p>
+                      
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">CRT File Upload</label>
+                            <input class="form-control" name="crtfile" type="file" id="formFile" required>
+                          </div>
+                         
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Valid</button>
+                    </div>
+				</form>
+                    
+                </div>
+            </div>
+        </div>

@@ -1,0 +1,70 @@
+{% load static %}
+<style>
+    .scrollable-table {
+        max-height: 500px; /* İstenilen yüksekliği ayarlayın */
+        overflow-y: auto;
+    }
+  </style>
+<main class="content">
+    <div class="container-fluid p-0">
+
+        <h1 class="h3 mb-3"><strong>Procenne</strong> ProCrypt HSM</h1>
+
+        <div class="row">
+            
+            <div class="col-15">
+                
+                <div class="card flex-fill">
+                    
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title col-6">HSM SSL Rules</h5>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ssl_rules">
+                            Rules Create
+                          </button>
+                        
+                    </div>
+
+                {% include 'Modal/SSL_Rules_Name.html' %}
+                <div class="scrollable-table">
+                    <table class="table table-hover my-0">
+                        <thead>
+                            <tr>
+                                <th>Rules Name</th>
+                                <th>Rules Type</th>
+                                <th>HSM Pool Name</th>
+                                <th>HSM Token Name</th>
+                                <th>Private Key Name</th>
+                                <th>Certificate Name</th>
+                                <th class="d-none d-md-table-cell">####</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            {% for item in SSL_R %}
+                            <tr>
+                                <td>{{ item.Rules_Name }}</td>
+                                <td>{{ item.Rules_Type }}</td>
+                                <td>{{ item.HSM_Pool_Name }}</td>
+                                <td>{{ item.HSM_Token_Name }}</td>
+                                <td>{{ item.Private_key }}</td>
+                                <td>{{ item.Certificate_Name }}</td>
+                                <td class="d-none d-md-table-cell">
+                                    <div class="col">
+                                        <a href="/SSL-offloading/delete/{{ item.id }}" class="btn btn-danger btn-sm">Delete</a>
+                                        <a href={% url 'NginxConfigDownload' RulesName=item.Rules_Name %} class="btn btn-primary btn-sm">Nginx-Config</a>
+                                        <a href={% url 'NginxSSLDownload' RulesName=item.Rules_Name %} class="btn btn-primary btn-sm">SSL-Config</a>
+                                        <a href="{% url 'Dockerfile_Downloads' filetype=item.Rules_Type %}" class="btn btn-primary btn-sm">Docker</a>
+                                </div></td>
+                            </tr>
+                            {% endfor %}
+                        
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+</main>

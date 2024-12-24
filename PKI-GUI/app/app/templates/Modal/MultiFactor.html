@@ -1,0 +1,45 @@
+<div class="modal fade  text-right" id="multifactorModal"  tabindex="-1" role="dialog" aria-labelledby="multifactorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <form method="POST">
+            {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Multi Factor Authentication</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% if multifactor %}
+                            <div class="form-group mt-4">
+                                <label for="input1">SMS Verifty:</label>
+                                <input type="text" class="form-control" id="input1" name="sms_name" maxlength="6" pattern="\d{6}" placeholder="SMS Verifty" required>
+                            </div>
+                            <!-- İlk 6 Haneli Input -->
+                            <div class="form-group mt-4">
+                                <label for="input1">E-Posta Verifty:</label>
+                                <input type="text" class="form-control" id="input1" name="eposta_name" maxlength="6" pattern="\d{6}" placeholder="E-Posta Verift" required>
+                            </div>
+                        
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Verifty</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+    <!-- Mesajları modal penceresinde göstermek için JavaScript (bu örnekte CDN kullanılıyor) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- Sayfa açıldığında modal penceresini otomatik açmak için JavaScript -->
+    <script>
+        // Mesajlar boşsa modal penceresini gizle
+        {% if multifactor %}
+            $(document).ready(function(){
+                $('#multifactorModal').modal('show');
+            });
+        {% endif %}
+    </script>

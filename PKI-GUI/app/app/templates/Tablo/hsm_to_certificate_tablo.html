@@ -1,0 +1,88 @@
+{% load Certificate_Validity %}
+<style>
+    .scrollable-table {
+        max-height: 500px; /* İstenilen yüksekliği ayarlayın */
+        overflow-y: auto;
+    }
+</style>
+<main class="content">
+    <div class="container-fluid p-0">
+
+        <h1 class="h3 mb-3"><strong>Procenne</strong> ProCrypt HSM</h1>
+
+        <div class="row">
+            
+            <div class="col-15">
+                
+                <div class="card flex-fill">
+                    
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title col-6">HSM Certificates</h5>
+                        
+                        
+                    </div>
+                    {% include 'Modal/CRT_Key_load.html' %}
+                
+                    <div class="scrollable-table">
+                    <table class="table table-hover my-0">
+                        <thead>
+                            <tr>
+                                <th>Slot ID</th>
+                                <th>HSM Token Name</th>
+                                <th>Certificate Name</th>
+                                <th>Country</th>
+                                <th>Date Start</th>
+                                <th>Date End</th>
+                                <th>Validity Status</th>
+                                <th class="d-none d-md-table-cell">#</th>
+                            </tr>
+                            <p>{{ response }}</p>
+                        </thead>
+                        <tbody>
+                            {% for item in obje %}
+
+                            <tr>
+                                <td>{{ item.Slot_ID }}</td>
+                                <td>{{ item.Slot_Label }}</td>
+                                <td>{{ item.Certificate_Name }}</td>
+                                <td>{{ item.Country }}</td>
+                                <td>{{ item.First_Date }}</td>
+                                <td>{{ item.Last_Date  }}</td>
+                                <td class="d-none d-md-table-cell"><span class="badge text-center bg-{% Date_Validity_HSM item.Last_Date  %}">{% Date_Validity_HSM2 item.Last_Date  %}</span></td>
+                                <td class="d-none d-md-table-cell"><div class="col">
+
+                                    <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#HSM_Certificate_Remove{{ item.Certificate_Name }}">Delete</a>
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="HSM_Certificate_Remove{{ item.Certificate_Name }}">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">HSM Certificate Delete</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <p>Are you sure you want to delete the certificate named {{ item.Certificate_Name }} ?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                              <a href="/HSM_Certificate/{{ item.Slot_Label }}/{{ item.Slot_ID }}/{{ item.Certificate_Name }}" class="btn btn-danger">Delete</a>
+                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div></td>
+                            </tr>
+                            {% endfor %}
+
+                        
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+</main>

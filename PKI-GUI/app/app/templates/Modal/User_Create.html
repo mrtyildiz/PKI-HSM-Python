@@ -1,0 +1,55 @@
+        <!-- Modal -->
+        <div class="modal fade" id="UserCreate">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST">
+					{% csrf_token %}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne HSM Token</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+                            
+                            <div class="form-floating">
+                                <select class="form-select" name="token_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                    {% for HSM_Name in TokenName %}
+                                        <option value="{{ HSM_Name.TokenName }}">{{ HSM_Name.TokenName }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="floatingSelectGrid">Select HSM Token</label>
+                            </div>
+
+							<div class="mb-3">
+								<label class="form-label">User Name</label>
+								<input class="form-control" type="text" name="user_name" required>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">User Parola</label>
+								<input class="form-control" type="password" name="user_parola" required>
+							</div>
+							{% if Factor == "Enable" %}
+                            <div class="mb-3">
+								<label class="form-label">Two Factor</label>
+								<input class="form-control" maxlength="6" pattern="\d{1,6}" type="text" name="TwoFactor" required>
+							</div>
+                            {% else %}
+                            <p></p>
+                            {% endif %}
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        
+                    </div>
+
+
+				</form>
+                    
+                </div>
+            </div>
+        </div>

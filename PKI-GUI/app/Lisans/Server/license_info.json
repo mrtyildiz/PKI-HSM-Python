@@ -1,0 +1,11 @@
+{
+    "license_key": "12345-abcde-67890-fghij",
+    "issued_to": "Müşteri Adı veya Şirket",
+    "issued_date": "2024-01-01T09:00:00",
+    "expiry_date": "2025-01-01T17:00:00",
+    "license_type": "Pro",
+    "additional_info": {
+        "contact_email": "musteri@example.com",
+        "max_users": 100
+    }
+}

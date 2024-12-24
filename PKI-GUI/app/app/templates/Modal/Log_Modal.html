@@ -1,0 +1,39 @@
+<!-- Modal -->
+<div class="modal fade" id="LogCreate">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <form method="POST" action="{% url 'export_logs_to_csv' %}">
+            {% csrf_token %}
+            <!-- Modal Başlık -->
+            <div class="modal-header">
+                <h4 class="modal-title">Procenne Log Create</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <!-- Modal İçerik -->
+            <div class="modal-body">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Start Date</label>
+                        <input class="form-control" type="date" name="Start_date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">End Date</label>
+                        <input class="form-control" type="date" name="End_date" required>
+                    </div>
+
+            </div>
+            
+            <!-- Modal Ayak -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+                
+            </div>
+
+
+        </form>
+            
+        </div>
+    </div>
+</div>

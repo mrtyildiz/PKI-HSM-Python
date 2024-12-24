@@ -1,0 +1,72 @@
+{% load Logs_List_Tag %}
+
+<style>
+    .scrollable-table {
+        max-height: 500px; /* İstenilen yüksekliği ayarlayın */
+        overflow-y: auto;
+    }
+</style>
+<main class="content">
+    <div class="container-fluid p-0">
+
+        <h1 class="h3 mb-3"><strong>Procenne</strong> ProCrypt HSM</h1>
+
+        <div class="row">
+            
+            <div class="col-15">
+                
+                <div class="card flex-fill">
+                    
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title col-6">HSM Logs</h5>
+                        <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#BackupLogFile">
+                                Backup File
+                        </button>
+                        <form action="{% url 'export_to_csv' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="data" value="{{ data|safe }}">
+                            <button class="btn btn-primary" type="submit">Export to CSV</button>
+                        </form>
+                        </div>
+                    </div>
+                    {% include 'Modal/Log_Modal.html' %}
+                    {% include 'Modal/FileLogShow.html' %}
+                    {% include 'Modal/BackupLogFile.html' %}
+                    <!-- .scrollable-table sınıfını ekleyin -->
+                    <div class="scrollable-table">
+                        <table class="table table-hover my-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>MultiTenantName</th>
+                                    <th>Log_Sensitives</th>
+                                    <th>created_by_id</th>
+                                    <th>Log_Process</th>
+                                    <th>created_at</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data %}
+                                <tr>
+                                    <td>{{ item.id }}</td>
+                                    <td>{{ item.MultiTenantName }}</td>
+                                    <td>{{ item.Log_Sensitives }}</td>
+                                    <td>{{ item.created_by_id }}</td>
+                                    <td>{{ item.Log_Process }}</td>
+                                    <td>{{ item.created_at }}</td>
+                                    <td>{{ item.Description }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+</main>
+

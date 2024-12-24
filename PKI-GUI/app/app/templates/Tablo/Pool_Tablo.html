@@ -1,0 +1,157 @@
+{% load HSM_Pool_tag %}
+<style>
+  .scrollable-table {
+      max-height: 500px; /* İstenilen yüksekliği ayarlayın */
+      overflow-y: auto;
+  }
+</style>
+<main class="content">
+    <div class="container-fluid p-0">
+
+        <h1 class="h3 mb-3"><strong>Procenne</strong> ProCrypt HSM</h1>
+
+        <div class="row">
+            
+            <div class="col-15">
+                
+                <div class="card flex-fill">
+                    
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title col-6">HSM Pool</h5>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#HSMModal">
+                            Create
+                          </button>
+                        
+                    </div>
+
+                {% include 'Modal/HSM_Pool_Create.html' %}
+                  <div class="scrollable-table">
+                    <table class="table table-hover my-0">
+                        <thead>
+                            <tr>
+                                <th>HSM Pool Name</th>
+                                <th>HSM IP Adress</th>
+                                <th>HSM Port Adress</th>
+                                <th>HSM Type</th>
+                                <th>HSM Status</th>
+                                <th class="d-none d-md-table-cell">Assignee</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            {% for item in HSM_All_object %}
+                            <tr>
+                                <td>{{ item.HSM_Pool_Name }}</td>
+                                <td>{{ item.HSM_IP }}</td>
+                                <td>{{ item.HSM_Port }}</td>
+                                <td><span class="badge bg-primary btn-sm">{{ item.HSM_Pool_Type }}</span></td>
+                                <td><span class="badge bg-{% Color_select_HSM_Status item.HSM_Status %} btn-sm">{{ item.HSM_Status }}</span></td>
+                                <td class="d-none d-md-table-cell">
+                                    <div class="col">
+                                    <a class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#HSMUpdateModal{{ item.id }}">Edit</a>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="HSMUpdateModal{{ item.id }}">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                            <form method="POST" action="{% url 'hsm_pool_update' id=item.id %}">
+                                                {% csrf_token %}
+                                                <!-- Modal Başlık -->
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Procenne HSM Pool</h4>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                
+                                                <!-- Modal İçerik -->
+                                                <div class="modal-body">
+                                                    
+                                                        <div class="mb-3">
+                                                            <label for="exampleInputEmail1" class="form-label">HSM Pool Name</label>
+                                                            <input type="text" class="form-control" name="hsm_pool_name" value={{ item.HSM_Pool_Name }}>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">HSM IP Address</label>
+                                                            <input class="form-control" type="text" name="hsm_ip_addres" value={{ item.HSM_IP }}>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">HSM Port Address</label>
+                                                            <input class="form-control" type="text" name="hsm_port_addres" value={{ item.HSM_Port }}>
+                                                        </div>
+                                                        <div class="form-floating">
+                                                            <select class="form-select" name="hsm_type" id="floatingSelectGrid" aria-label="Floating label select example">
+                                                            <option value="Multi">Multi</option>
+                                                            <option value="Single">Single</option>
+                                                            </select>
+                                                            <label for="floatingSelectGrid">Select HSM Type</label>
+                                                        </div>
+                                                    
+                                                </div>
+                                                
+                                                <!-- Modal Ayak -->
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </form>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#HSMDeleteModal{{ item.id }}">Delete</a>
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="HSMDeleteModal{{ item.id }}">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">HSM Pool Delete</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <p>Are you sure you want to delete HSM Pool named {{ item.HSM_Pool_Name }} ?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                              <a href="/index/{{ item.id }}" class="btn btn-danger">Delete</a>
+                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+
+
+                                    <a class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#HSMActiveMake{{ item.id }}">Make it active</a>
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="HSMActiveMake{{ item.id }}">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">HSM Pool Delete</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <p>{{ item.HSM_Pool_Name }} Would you like to activate HSM Pool ?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                              <a href="/index/active/{{ item.HSM_Pool_Name }}" class="btn btn-info">Make it active</a>
+                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div></td>
+                            </tr>
+                            {% endfor %}
+                        
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+</main>

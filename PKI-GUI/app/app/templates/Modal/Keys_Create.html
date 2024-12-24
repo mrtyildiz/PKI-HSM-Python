@@ -1,0 +1,116 @@
+
+<!-- Modal -->
+        <div class="modal fade" id="KeysCreate">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST">
+					{% csrf_token %}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne HSM Token</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+                            
+                            <div class="form-floating">
+                                <select class="form-select" name="token_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                    {% for HSM_Name in Token_Name %}
+                                        <option value="{{ HSM_Name.TokenName }}">{{ HSM_Name.TokenName }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="floatingSelectGrid">Select HSM Token</label>
+                            </div>
+                            
+                            <div class="mb-3">
+                            <label class="form-label">Key Name</label>
+                            <input class="form-control" type="text" name="key_name" required>
+                          </div>
+
+                            <div class="form-floating">
+                                <select class="form-select" id="keyTypeSelect" name="KeyType" aria-label="Floating label select example" onchange="updateKeyOptions()">
+                                  <option value="Choice">Choice</option>
+                                  <option value="AES">AES</option>
+                                  <option value="RSA">RSA</option>
+                                  <option value="EC">EC</option>
+                                </select>
+                                <label for="keyTypeSelect">Key Type</label>
+                              </div>
+                          
+                              <div id="keyOptionsContainer"></div>
+                                                  
+                              <script>
+                                function updateKeyOptions() {
+                                  const selectedKeyType = document.getElementById('keyTypeSelect').value;
+                                  const keyOptionsContainer = document.getElementById('keyOptionsContainer');
+                              
+                                  keyOptionsContainer.innerHTML = '';
+                              
+                                  if (selectedKeyType === 'RSA') {
+                                    // Add options for Key Type A
+                                    keyOptionsContainer.innerHTML += '<div class="form-floating"><select class="form-select" name="KeyOptionRSA" aria-label="Floating label select example"><option value="1024">1024</option><option value="2048">2048</option><option value="3072">3072</option><option value="4096">4096</option></select><label for="keyOptionA">Key RSA</label></div>';
+                                  } else if (selectedKeyType === 'EC') {
+                                    // Add options for Key Type C
+                                    keyOptionsContainer.innerHTML += '<div class="form-floating"><select class="form-select" name="KeyOptionEC" aria-label="Floating label select example"><option value="ansiX9p192r1">ansiX9p192r1</option><option value="ansiX9p256r1">ansiX9p256r1</option><option value="ansiX9p384r1">ansiX9p384r1</option><option value="brainpoolP192r1">brainpoolP192r1</option><option value="brainpoolP224r1">brainpoolP224r1</option><option value="brainpoolP256r1">brainpoolP256r1</option><option value="brainpoolP320r1">brainpoolP320r1</option><option value="nistp192">nistp192</option><option value="nistp224">nistp224</option><option value="nistp521">nistp521</option><option value="prime192v1">prime192v1</option><option value="prime192v2">prime192v2</option><option value="prime192v3">prime192v3</option><option value="prime256v1">prime256v1</option><option value="prime384v1">prime384v1</option><option value="secp192k1">secp192k1</option><option value="secp192r1">secp192r1</option><option value="secp224r1">secp224r1</option><option value="secp256k1">secp256k1</option><option value="secp256r1">secp256r1</option><option value="secp384r1">secp384r1</option><option value="secp521r1">secp521r1</option></select><label for="keyOptionC">Key EC</label></div>';
+                                  } else if (selectedKeyType === 'AES') {
+                                    // Add options for Key Type C
+                                    keyOptionsContainer.innerHTML += '<div class="form-floating"><select class="form-select" name="KeyOptionAES" aria-label="Floating label select example"><option value="128">128</option><option value="192">192</option><option value="256">256</option> </select><label for="keyOptionC">Key AES</label></div>';
+                                  }
+                                }
+                                
+                                let items = []; // Eklenen öğeleri saklamak için dizi
+
+                                function addItem() {
+                                  // Form verilerini al
+                                  const selectValue = document.getElementById('selectOption').value;
+                                  const inputValue = document.getElementById('inputText').value;
+                              
+                                  // Yeni öğeyi oluştur
+                                  const newItem = {
+                                    select: selectValue,
+                                    input: inputValue
+                                  };
+                              
+                                  // Öğeyi listeye ekle
+                                  items.push(newItem);
+                              
+                                  // Listeyi güncelle
+                                  updateItemList();
+                              
+                                  // Modal'ı kapat
+                                  $('#myModal').modal('hide');
+                                }
+                              
+                                function updateItemList() {
+                                  const itemList = document.getElementById('itemList');
+                                  itemList.innerHTML = ''; // Liste içeriğini temizle
+                              
+                                  // Tüm öğeleri listeye ekle
+                                  items.forEach(item => {
+                                    const li = document.createElement('li');
+                                    li.textContent = `Seçenek: ${item.select}, Giriş: ${item.input}`;
+                                    itemList.appendChild(li);
+                                  });
+                                }
+                              
+                                function removeLastItem() {
+                                  // Son eklenen öğeyi sil
+                                  items.pop();
+                              
+                                  // Listeyi güncelle
+                                  updateItemList();
+                                }
+                              </script>
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+				</form>
+                    
+                </div>
+            </div>
+        </div>

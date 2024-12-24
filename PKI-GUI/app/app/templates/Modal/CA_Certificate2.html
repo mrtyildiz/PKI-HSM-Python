@@ -1,0 +1,226 @@
+<div class="modal fade" id="CACertificateCreate2">
+    <div class="modal-dialog">
+        <div class="container mt-5">
+            <div class="modal-content">
+                <form method="POST" enctype="multipart/form-data" action="{% url 'CA_CRT' %}">
+                {% csrf_token %}
+                <!-- Modal Başlık -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Procenne CA Create</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal İçerik -->
+                <div class="modal-body">
+                    <div class="form-floating">
+                        <select class="form-select" name="Token_Name" id="floatingSelectGrid" aria-label="Floating label select example">
+                            {% for HSM_Name in HSM_All_object %}
+                                <option value="{{ HSM_Name.TokenName }}">{{ HSM_Name.TokenName }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="floatingSelectGrid">Token Name</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Certificate Name</label>
+                        <input class="form-control" type="text" name="CertificateName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Life Time</label>
+                        <input class="form-control" type="number" name="lifetime" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Key Name</label>
+                        <input class="form-control" type="text" name="KeyName" required>
+                    </div>
+                    <!-- KEy işlemi tamamlandı -->
+                    <div class="form-floating">
+                        <select class="form-select" id="keyTypeSelect" name="KeyType" aria-label="Floating label select example" onchange="updateKeyOptions()">
+                          <option value="Choice">Choice</option>
+                          <option value="RSA">RSA</option>
+                          <option value="EC">EC</option>
+                        </select>
+                        <label for="keyTypeSelect">Key Type</label>
+                    </div>
+                      <div id="keyOptionsContainer"></div>
+                      <div id="inputContainer"></div>
+                      <script>
+                        function updateKeyOptions() {
+                          const selectedKeyType = document.getElementById('keyTypeSelect').value;
+                          const keyOptionsContainer = document.getElementById('keyOptionsContainer');
+                      
+                          keyOptionsContainer.innerHTML = '';
+                      
+                          if (selectedKeyType === 'RSA') {
+                            
+                            keyOptionsContainer.innerHTML += '<div class="form-floating"><select class="form-select" name="RSAKey" aria-label="Floating label select example"><option value="1024">1024</option><option value="2048">2048</option><option value="3072">3072</option><option value="4096">4096</option></select><label for="keyOptionA">Key RSA</label></div>';
+                          } else if (selectedKeyType === 'EC') {
+                            // Add options for Key Type C
+                            keyOptionsContainer.innerHTML += '<div class="form-floating"><select class="form-select" name="ECKey" aria-label="Floating label select example"><option value="ansiX9p192r1">ansiX9p192r1</option><option value="ansiX9p256r1">ansiX9p256r1</option><option value="ansiX9p384r1">ansiX9p384r1</option><option value="brainpoolP192r1">brainpoolP192r1</option><option value="brainpoolP224r1">brainpoolP224r1</option><option value="brainpoolP256r1">brainpoolP256r1</option><option value="brainpoolP320r1">brainpoolP320r1</option><option value="nistp192">nistp192</option><option value="nistp224">nistp224</option><option value="nistp521">nistp521</option><option value="prime192v1">prime192v1</option><option value="prime192v2">prime192v2</option><option value="prime192v3">prime192v3</option><option value="prime256v1">prime256v1</option><option value="prime384v1">prime384v1</option><option value="secp192k1">secp192k1</option><option value="secp192r1">secp192r1</option><option value="secp224r1">secp224r1</option><option value="secp256k1">secp256k1</option><option value="secp256r1">secp256r1</option><option value="secp384r1">secp384r1</option><option value="secp521r1">secp521r1</option></select><label for="keyOptionC">Key EC</label></div>';
+                          }
+                        }
+                        
+                        let items = []; // Eklenen öğeleri saklamak için dizi
+
+                        function addItem() {
+                          // Form verilerini al
+                          const selectValue = document.getElementById('selectOption').value;
+                          const inputValue = document.getElementById('inputText').value;
+                      
+                          // Yeni öğeyi oluştur
+                          const newItem = {
+                            select: selectValue,
+                            input: inputValue
+                          };
+                      
+                          // Öğeyi listeye ekle
+                          items.push(newItem);
+                      
+                          // Listeyi güncelle
+                          updateItemList();
+                      
+                          // Modal'ı kapat
+                          $('#myModal').modal('hide');
+                        }
+                      
+                        function updateItemList() {
+                          const itemList = document.getElementById('itemList');
+                          itemList.innerHTML = ''; // Liste içeriğini temizle
+                      
+                          // Tüm öğeleri listeye ekle
+                          items.forEach(item => {
+                            const li = document.createElement('li');
+                            li.textContent = `Seçenek: ${item.select}, Giriş: ${item.input}`;
+                            itemList.appendChild(li);
+                          });
+                        }
+                      
+                        function removeLastItem() {
+                          // Son eklenen öğeyi sil
+                          items.pop();
+                      
+                          // Listeyi güncelle
+                          updateItemList();
+                        }
+                      </script>
+                      <!-- KEy işlemi tamamlandı -->
+
+                      <div class="container mt-5"></div>
+                      <!-- Bootstrap JS ve jQuery bağlantıları -->
+                      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.7.0/dist/js/bootstrap.bundle.min.js"></script>
+                            <!-- JavaScript -->
+                        <script>
+                            let elementCount = 0; // Eklenen eleman sayısını takip etmek için
+
+                            function addSelectAndInput() {
+                                // Her elemanın benzersiz bir ID'si olsun
+                                const elementId = `dynamicElement_${elementCount}`;
+
+                                // Dinamik select ve input alanını içeren HTML'i oluştur
+                                const dynamicElementHTML = `
+                                    <div class="form-group" id="${elementId}Container">
+                                        <label for="${elementId}Select">New Attribute:</label>
+                                        <select class="form-select" id="${elementId}Select" name="dynamicSelect[]">
+                                            <!-- Buraya select seçenekleri eklenebilir -->
+                                        </select>
+
+                                        <label for="${elementId}Input">New Value:</label>
+                                        <input type="text" class="form-control" id="${elementId}Input" name="dynamicInput[]" placeholder="Yeni değer girin" required>
+
+                                        <button type="button" class="btn btn-danger" onclick="removeElement('${elementId}')">Sil</button>
+                                    </div>
+                                `;
+
+                                // Dinamik select ve input alanını ekleyin
+                                document.getElementById('formContainer').innerHTML += dynamicElementHTML;
+
+                                // Select sayısını artırın
+                                elementCount++;
+                            }
+
+                            function removeElement(elementId) {
+                                // ID'si verilen select ve input alanını kaldır
+                                document.getElementById(elementId + 'Container').remove();
+                            }
+                        </script>
+
+                              <!-- JavaScript -->
+                        <script>
+                            let inputCount = 0; // Eklenen input sayısını takip etmek için
+
+                            function addInput() {
+                                // Her input alanının benzersiz bir ID'si olsun
+                                const inputId = `dynamicInput_${inputCount}`;
+                                
+                                // Dinamik input alanını içeren HTML'i oluştur
+                                const dynamicInputHTML = `
+                                <div class="form-group" id="${inputId}Container">
+                                <label for="${inputId}">New Attribute:</label>
+                                <select class="form-select" id="${inputId}" name="dynamicSelect[]">
+                                    <option value="NameOID.COUNTRY_NAME">COUNTRY_NAME</option>
+                                    <option value="NameOID.COMMON_NAME">COMMON_NAME</option>
+                                    <option value="NameOID.ORGANIZATION_NAME">ORGANIZATION_NAME</option>
+                                    <option value="NameOID.SERIAL_NUMBER">SERIAL_NUMBER</option>
+                                    <option value="NameOID.STATE_OR_PROVINCE_NAME">STATE_OR_PROVINCE_NAME</option>
+                                    <option value="NameOID.LOCALITY_NAME">LOCALITY_NAME</option>
+                                    <option value="NameOID.ORGANIZATIONAL_UNIT_NAME">ORGANIZATIONAL_UNIT_NAME</option>
+                                    <option value="NameOID.GIVEN_NAME">GIVEN_NAME</option>
+                                    <option value="NameOID.SURNAME">SURNAME</option>
+                                    <option value="NameOID.PSEUDONYM">PSEUDONYM</option>
+                                    <option value="NameOID.TITLE">TITLE</option>
+                                    <option value="NameOID.ORGANIZATION_IDENTIFIER">ORGANIZATION_IDENTIFIER</option>
+                                    <option value="NameOID.DN_QUALIFIER">DN_QUALIFIER/option>
+                                    <option value="NameOID.COUNTRY_OF_CITIZENSHIP">COUNTRY_OF_CITIZENSHIP</option>
+                                    <option value="NameOID.COUNTRY_OF_RESIDENCE">COUNTRY_OF_RESIDENCE</option>
+                                    <option value="NameOID.DATE_OF_BIRTH">DATE_OF_BIRTH</option>
+                                    <option value="NameOID.PLACE_OF_BIRTH">PLACE_OF_BIRTH</option>
+                                    <option value="NameOID.GENDER">GENDER</option>
+                                    <option value="NameOID.USER_ID">USER_ID</option>
+                                    <option value="NameOID.EMAIL_ADDRESS">EMAIL_ADDRESS</option>
+                                    <option value="NameOID.STREET_ADDRESS">STREET_ADDRESS</option>
+                                    <option value="NameOID.UNSTRUCTURED_NAME">UNSTRUCTURED_NAME</option>
+                                    <option value="NameOID.UNSTRUCTURED_ADDRESS">UNSTRUCTURED_ADDRESS</option>
+                                    <option value="NameOID.NAME">NAME</option>
+                                    <option value="NameOID.SURNAME_GIVEN_NAME">SURNAME_GIVEN_NAME</option>
+                                    <option value="NameOID.PHONE_NUMBER">PHONE_NUMBER</option>
+                                    <option value="NameOID.PROFESSION_NAME">PROFESSION_NAME</option>
+                                    <option value="NameOID.IDENTIFIER_REGISTRY">IDENTIFIER_REGISTRY</option>
+                                    <option value="NameOID.DISTINGUISHED_NAME">DISTINGUISHED_NAME</option>
+
+                                    <option value="NameOID.ROLE">ROLE</option>
+                                    <option value="NameOID.MOBILE_PHONE_NUMBER">MOBILE_PHONE_NUMBER</option>
+                                    <option value="NameOID.POSTAL_CODE">POSTAL_CODE</option>
+                                    <option value="NameOID.BUSINESS_CATEGORY">BUSINESS_CATEGORY</option>
+                                    <option value="NameOID.TELEPHONE_NUMBER">TELEPHONE_NUMBER</option>
+
+                                </select>
+                                    <div class="form-group" id="${inputId}Container">
+                                        <input type="text" class="form-control" id="${inputId}" name="dynamicInput[]" placeholder="Yeni değer girin" required>
+                                        <button type="button" class="btn btn-danger" onclick="removeInput('${inputId}')">Sil</button>
+                                    </div>
+                                `;
+
+                                // Dinamik input alanını ekleyin
+                                document.getElementById('inputContainer').innerHTML += dynamicInputHTML;
+
+                                // Input sayısını artırın
+                                inputCount++;
+                            }
+
+                            function removeInput(inputId) {
+                                // ID'si verilen input alanını kaldır
+                                document.getElementById(inputId + 'Container').remove();
+                            }
+                        </script>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="addInput()">New Attribute</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

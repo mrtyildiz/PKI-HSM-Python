@@ -1,0 +1,34 @@
+{% load Slot_List_Tag %}
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'Merger/head.html' %}
+{% load static %}
+<body>
+	<div class="wrapper">
+
+		{% include 'Merger/navbar.html' %}
+
+		<div class="main">
+			
+			{% include 'Merger/Users-navbar.html' %}
+			{% include 'Tablo/Users_Tablo.html' %}
+			<div class="modal-body">
+				{% if messages %}
+					<ul class="messages">
+						{% for message in messages %}
+							<p>{{ message }}</p>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			  </div>
+			{% include 'Merger/footer.html' %}
+		</div>
+	</div>
+
+	<script src="{% static 'js/app.js' %}"></script>
+
+
+</body>
+
+</html>

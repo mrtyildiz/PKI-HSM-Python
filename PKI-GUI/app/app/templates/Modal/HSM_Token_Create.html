@@ -1,0 +1,74 @@
+
+
+<!-- Modal -->
+        <div class="modal fade" id="HSMTokenModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST">
+					{% csrf_token %}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne HSM Token</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+                            
+                            <div class="form-floating">
+                                <select class="form-select" name="pool_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                    {% for HSM_Name in HSM_Name %}
+                                        <option value="{{ HSM_Name.HSM_Pool_Name }}">{{ HSM_Name.HSM_Pool_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="floatingSelectGrid">Select HSM Pool Name</label>
+                            </div>
+                            <p></p>
+                            <div class="form-floating">
+                                <select class="form-select" name="hsm_slot_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                    {% for Token in Token_Name %}
+                                        <option value="{{ Token }}">{{ Token}}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="floatingSelectGrid">Select Token Name</label>
+                            </div>
+                            <!--<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary btn-sm" data-bs-target="#HSMNewToken2" data-bs-toggle="modal" data-bs-dismiss="modal">New Token Create</button>
+                                  </div>
+                              
+                              <script>
+                                $(document).ready(function () {
+                                  $('#HSMTokenModal').on('show.bs.modal', function (e) {
+                                    // This event fires immediately when the show instance method is called
+                                    $('#HSMNewToken').modal('hide');
+                                  });
+                              
+                                  $('#HSMNewToken').on('show.bs.modal', function (e) {
+                                    // This event fires immediately when the show instance method is called
+                                    $('#HSMTokenModal').modal('hide');
+                                  });
+                                });
+                              </script>
+                            </div>-->
+							<!--<div class="mb-3">
+								<label class="form-label">HSM Slot Name</label>
+								<input class="form-control" type="text" name="hsm_slot_name" required>
+							</div>-->
+							<div class="mb-3">
+								<label class="form-label">HSM Slot PIN</label>
+								<input class="form-control" type="password" name="hsm_slot_pin" required>
+							</div>
+							
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+				</form>
+                    
+                </div>
+            </div>
+        </div>

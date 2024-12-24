@@ -1,0 +1,117 @@
+<nav id="sidebar" class="sidebar js-sidebar">
+	<div class="sidebar-content js-simplebar">
+				<a class="sidebar-brand">
+          <span class="align-middle">Procenne PKI</span>
+        </a>
+		<a class="sidebar-link"><i class="align-middle"></i> <span class="align-middle">{{ TenantName }}</span></a>
+		{% if UserType == 'System_User' %}
+		<ul class="sidebar-nav"><li class="sidebar-header">HSM</li>
+			
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Dashboard"><i class="align-middle" data-feather="cpu"></i> <span class="align-middle">Dashboard</span></a>
+			</li>
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/index"><i class="align-middle" data-feather="cpu"></i> <span class="align-middle">HSM Pool</span></a>
+			</li>
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Slot_List"><i class="align-middle" data-feather="book"></i> <span class="align-middle">Slot List</span></a>
+			</li>
+
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Certificates_List"><i class="align-middle" data-feather="award"></i> <span class="align-middle">Certificates</span></a>
+			</li>
+			
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Client_Certificate"><i class="align-middle" data-feather="award"></i> <span class="align-middle">Client Certificates</span></a>
+			</li>
+
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/HSM_Certificate"><i class="align-middle" data-feather="award"></i> <span class="align-middle">HSM To Certificates</span></a>
+			</li>
+
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Keys_List"><i class="align-middle" data-feather="key"></i> <span class="align-middle">Keys</span></a>
+			</li>
+
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Users"><i class="align-middle" data-feather="users"></i> <span class="align-middle">HSM Users</span></a>
+			</li>
+			
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Rules"><i class="align-middle" data-feather="feather"></i> <span class="align-middle">Rules</span></a>
+			</li>
+
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Users_All"><i class="align-middle" data-feather="users"></i> <span class="align-middle">Users_All</span></a>
+			</li>
+			
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Logs_Views"><i class="align-middle" data-feather="book-open"></i> <span class="align-middle">Logs</span></a>
+			</li>
+			
+			
+		</ul>
+		{% elif UserType == 'Operator_User' %}
+		<ul class="sidebar-nav"><li class="sidebar-header">HSM</li>
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/index"><i class="align-middle" data-feather="cpu"></i> <span class="align-middle">HSM Pool</span></a>
+			</li>
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Slot_List"><i class="align-middle" data-feather="book"></i> <span class="align-middle">Slot List</span></a>
+			</li>
+
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Certificates_List"><i class="align-middle" data-feather="award"></i> <span class="align-middle">Certificates</span></a>
+			</li>
+			
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Client_Certificate"><i class="align-middle" data-feather="award"></i> <span class="align-middle">Client Certificates</span></a>
+			</li>
+
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/HSM_Certificate"><i class="align-middle" data-feather="award"></i> <span class="align-middle">HSM To Certificates</span></a>
+			</li>
+
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Keys_List"><i class="align-middle" data-feather="key"></i> <span class="align-middle">Keys</span></a>
+			</li>
+
+
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Rules"><i class="align-middle" data-feather="feather"></i> <span class="align-middle">Rules</span></a>
+			</li>
+
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Users_All"><i class="align-middle" data-feather="users"></i> <span class="align-middle">Users_All</span></a>
+			</li>
+			
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Logs_Views"><i class="align-middle" data-feather="book-open"></i> <span class="align-middle">Logs</span></a>
+			</li>
+			
+			
+		</ul>
+		{% else %}
+		<ul class="sidebar-nav"><li class="sidebar-header">HSM</li>
+			
+			
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Client_Certificate"><i class="align-middle" data-feather="award"></i> <span class="align-middle">Client Certificates</span></a>
+			</li>
+
+
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Keys_List"><i class="align-middle" data-feather="key"></i> <span class="align-middle">Keys</span></a>
+			</li>
+
+			
+			<li class="sidebar-item">
+				<a class="sidebar-link" href="/Logs_Views"><i class="align-middle" data-feather="book-open"></i> <span class="align-middle">Logs</span></a>
+			</li>
+			
+			
+		</ul>
+		{% endif %}
+	</div>
+
+	</nav>

@@ -1,0 +1,50 @@
+        <!-- Modal -->
+        <div class="modal fade" id="Valid_Load">
+            <div class="modal-dialog">
+                <div class="modal-content">
+				<form method="POST" enctype="multipart/form-data" action="{% url 'Valid_Load_Request' %}">
+					{% csrf_token %}
+                    <!-- Modal Başlık -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Procenne CRT Load</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <!-- Modal İçerik -->
+                    <div class="modal-body">
+                        <div class="form-floating">
+                                
+                            <select class="form-select" name="token_name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                {% for item in HSM_All_object %}
+                                    <option value="{{ item.TokenName }}">{{ item.TokenName }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="floatingSelectGrid">Token Name </label>
+                        </div>
+                        <p></p>
+                        <div class="form-floating">
+                                
+                            <select class="form-select" name="Cert_Name" id="floatingSelectGrid" aria-label="Floating label select example">
+                                {% for item in obje %}
+                                    <option value="{{ item.Certificate_Name }}">{{ item.Certificate_Name }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="floatingSelectGrid">CA Certificate Name </label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">CRT File Upload</label>
+                            <input class="form-control" name="crtfile" type="file" id="formFile" required>
+                          </div>
+                         
+                    </div>
+                    
+                    <!-- Modal Ayak -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Valid</button>
+                    </div>
+				</form>
+                    
+                </div>
+            </div>
+        </div>

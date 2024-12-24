@@ -1,0 +1,69 @@
+{% load Logs_List_Tag %}
+
+<style>
+    .scrollable-table {
+        max-height: 500px; /* İstenilen yüksekliği ayarlayın */
+        overflow-y: auto;
+    }
+</style>
+<main class="content">
+    <div class="container-fluid p-0">
+
+        <h1 class="h3 mb-3"><strong>Procenne</strong> ProCrypt HSM</h1>
+
+        <div class="row">
+            
+            <div class="col-15">
+                
+                <div class="card flex-fill">
+                    
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title col-6">HSM Logs</h5>
+                        <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#BackupLogFile">
+                                Backup File
+                        </button>
+                        <a href="{% url 'export_logs_to_csv' %}" class="btn btn-primary">Full Export Logs</a>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#LogCreate">
+                            Log Export
+                          </button>
+                        </div>
+                    </div>
+                    {% include 'Modal/Log_Modal.html' %}
+                    {% include 'Modal/FileLogShow.html' %}
+                    {% include 'Modal/BackupLogFile.html' %}
+                    <!-- .scrollable-table sınıfını ekleyin -->
+                    <div class="scrollable-table">
+                        <table class="table table-hover my-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Log Sensivity</th>
+                                    <th>Process</th>
+                                    <th>Users</th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in logs_info %}
+                                <tr>
+                                    <td>{{ item.id }}</td>
+                                    <td><span class="badge bg-{% SensitivesLogs item.Log_Sensitives %}">{{ item.Log_Sensitives }}</span></td>
+                                <td><span class="badge bg-{% Process_Log item.Log_Process %}">{{ item.Log_Process }}</td>
+                                    <td>{{ item.created_by }}</td>
+                                    <td>{{ item.created_at }}</td>
+                                    <td>{{ item.Description }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+</main>
+
