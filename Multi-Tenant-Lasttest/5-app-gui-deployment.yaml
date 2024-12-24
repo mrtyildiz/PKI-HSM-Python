@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-gui-deployment
+  namespace: tanent-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-gui
+  template:
+    metadata:
+      labels:
+        app: app-gui
+    spec:
+      containers:
+      - name: app-gui-container
+        image: pki-gui:3.0
+        env:
+        - name: NAMESPACE
+          value: "tanent-1" # değişkeni tanımla
+        - name: Postgresql_IP
+          value: "postgres-service"
+        - name: Postgresql_Port
+          value: "5432"
+        - name: Postgresql_DB
+          value: "pki_gui_db"
+        - name: API_URL
+          value: "http://app-pki:8000/"
+        - name: TZ
+          value: "Europe/Istanbul"
+        - name: API_Slot
+          value: "IoaqNDIk1Z9Lx8XL3t13PuoovWvum83U"
+        - name: Rabbit_Host
+          value: "rabbitmq-service"
+        - name: Ldap_HostName
+          value: "ldap-server-service"
+        - name: LdapDomainName
+          value: "cn=admin,dc=procenne,dc=com"
+          
+        - name: Postgresql_User
+          valueFrom:
+            secretKeyRef:
+              name: app-gui-secrets
+              key: Postgresql_User
+        - name: Postgresql_Password
+          valueFrom:
+            secretKeyRef:
+              name: app-gui-secrets
+              key: Postgresql_Password
+        - name: RabbitUser
+          valueFrom:
+            secretKeyRef:
+              name: app-gui-secrets
+              key: RabbitUser
+        - name: RabbitPassword
+          valueFrom:
+            secretKeyRef:
+              name: app-gui-secrets
+              key: RabbitPassword
+        - name: LdapAdminPassword
+          valueFrom:
+            secretKeyRef:
+              name: app-gui-secrets
+              key: LdapAdminPassword
+        ports:
+        - containerPort: 8000
+        command: ["sleep", "36000"]
+        volumeMounts:
+        - name: gui-app-volume
+          mountPath: /app
+        - name: gui-app-api-crt
+          mountPath: /app/app/CRT
+        - name: gui-app-api-public
+          mountPath: /app/app/Public
+        - name: gui-app-api-csr
+          mountPath: /app/app/CSR
+        - name: gui-app-backup
+          mountPath: /opt/BackupLog
+      volumes:
+      - name: gui-app-volume
+        hostPath:
+          path: /MultiTanent/PKI-GUI/app/  # Update this path accordingly
+      - name: gui-app-api-crt
+        hostPath:
+          path: /MultiTanent/PKI-APP/app/CRT
+      - name: gui-app-api-public
+        hostPath:
+          path: /MultiTanent/PKI-APP/app/Public
+      - name: gui-app-api-csr
+        hostPath:
+          path: /MultiTanent/PKI-APP/app/CSR
+      - name: gui-app-backup
+        hostPath:
+          path: /MultiTanent/FTP-Server/data

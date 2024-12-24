@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gui-app-pv
+  namespace: tanent-1  # Namespace belirtilmi�
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /pki-api/PKI-GUI/app/  # Bu yolu uygun �ekilde g�ncelleyin

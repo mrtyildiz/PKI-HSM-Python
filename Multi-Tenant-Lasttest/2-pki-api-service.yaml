@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pki-api-http
+  namespace: tanent-1  # Namespace belirtilmi�
+spec:
+  selector:
+    app: pki-api
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000

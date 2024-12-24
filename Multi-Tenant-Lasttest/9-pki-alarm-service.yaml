@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pki-alarm-service
+  namespace: tanent-1 
+spec:
+  selector:
+    app: pki-alarm
+  ports:
+  - protocol: TCP
+    port: 9090
+    targetPort: 8000

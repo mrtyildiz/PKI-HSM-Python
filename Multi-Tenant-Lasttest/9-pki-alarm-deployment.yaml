@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pki-alarm-deployment
+  namespace: tanent-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pki-alarm
+  template:
+    metadata:
+      labels:
+        app: pki-alarm
+    spec:
+      containers:
+      - name: pki-alarm-container
+        image: pkialarm:2.0
+        env:
+        - name: MailHostName
+          value: "pki-mail-service"
+        - name: Postgresql_DB
+          value: "pki_gui_db"
+        - name: Postgresql_User
+          valueFrom:
+            secretKeyRef:
+              name: pki-alarm-secrets
+              key: Postgresql_User
+        - name: Postgresql_Password
+          valueFrom:
+            secretKeyRef:
+              name: pki-alarm-secrets
+              key: Postgresql_Password
+        - name: Postgresql_IP
+          value: "postgres"
+        - name: Postgresql_Port
+          value: "5432"
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: pki-alarm-volume
+          mountPath: /app
+        - name: pki-gui-volume
+          mountPath: /app/app/models.py
+        command: ["python3", "manage.py", "runserver"]
+      volumes:
+      - name: pki-alarm-volume
+        hostPath:
+          path: /MultiTanent/PKI-Alarm/app  # Update this path accordingly
+      - name: pki-gui-volume
+        hostPath:
+          path: /MultiTanent/PKI-GUI/app/app/models.py  # Update this path accordingly

@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pki-backup-deployment
+  namespace: tanent-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pki-backup
+  template:
+    metadata:
+      labels:
+        app: pki-backup
+    spec:
+      containers:
+      - name: pki-backup-container
+        image: pki-backup-service:1.0
+
+        env:
+        - name: Postgresql_DB
+          value: "pki_gui_db"
+        - name: Postgresql_IP
+          value: "postgres"
+        - name: API_Slot
+          value: "IoaqNDIk1Z9Lx8XL3t13PuoovWvum83U"
+        - name: TokenName
+          value: "PKI_Client"
+        - name: KeyName
+          value: "Log_File_Encrypt"
+        - name: ftp_host
+          value: "pki-ftp"
+        - name: Rabbit_Host
+          valueFrom:
+            secretKeyRef:
+              name: pki-backup-secrets
+              key: Rabbit_Host
+        - name: Postgresql_User
+          valueFrom:
+            secretKeyRef:
+              name: pki-backup-secrets
+              key: Postgresql_User
+        - name: Postgresql_Password
+          valueFrom:
+            secretKeyRef:
+              name: pki-backup-secrets
+              key: Postgresql_Password
+        - name: RabbitPassword
+          valueFrom:
+            secretKeyRef:
+              name: pki-backup-secrets
+              key: RabbitPassword
+        - name: RabbitUser
+          valueFrom:
+            secretKeyRef:
+              name: pki-backup-secrets
+              key: RabbitUser
+        - name: ftp_user
+          valueFrom:
+            secretKeyRef:
+              name: pki-backup-secrets
+              key: ftp_user
+        - name: ftp_password
+          valueFrom:
+            secretKeyRef:
+              name: pki-backup-secrets
+              key: ftp_password
+        ports:
+        - containerPort: 8000
+        command: ["sleep", "36000"]
+        volumeMounts:
+        - name: app-volume
+          mountPath: /app/
+        - name: logs-volume
+          mountPath: /opt/BackupLog/
+      volumes:
+      - name: app-volume
+        hostPath:
+          path: /MultiTanent/PKI-Alarm/app  # Update this path accordingly
+      - name: logs-volume
+        hostPath:
+          path: /MultiTanent/Backup_Logs/  # Update this path accordingly

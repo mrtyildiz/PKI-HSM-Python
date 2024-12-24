@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pki-api
+  namespace: tanent-1
+spec:
+  containers:
+  - name: pki-api
+    image: pki_hsm_all:1.0
+    command: ["python3", "app.py"]
+    env:
+    - name: PYKCS11LIB
+      value: /lib64/libprocryptoki.so
+    - name: Slot_PIN
+      value: gAAAAABlUhkSu9zmmOqy_Q8CQchXhGyhb0aPYcJ1tXO4oeHYESw-hxZjbbwTWeDrvCwMVO9xE13H7TJxNIV3JEDYfKyG_s0sEg==
+    - name: Rabbit_Host
+      value: rabbitmq-service
+    - name: RabbitUser
+      valueFrom:
+        secretKeyRef:
+          name: pki-api-secrets
+          key: RabbitUser
+    - name: RabbitPassword
+      valueFrom:
+        secretKeyRef:
+          name: pki-api-secrets
+          key: RabbitPassword
+    - name: RABBITMQ_HOST
+      valueFrom:
+        secretKeyRef:
+          name: pki-api-secrets
+          key: RABBITMQ_HOST
+    - name: Slot_ID
+      valueFrom:
+        secretKeyRef:
+          name: pki-api-secrets
+          key: Slot_ID
+    - name: Slot_Key_Name
+      valueFrom:
+        secretKeyRef:
+          name: pki-api-secrets
+          key: Slot_Key_Name
+    ports:
+    - containerPort: 8000
+    volumeMounts:
+    - name: app-volume
+      mountPath: /app/
+    - name: config-volume
+      mountPath: /opt/procrypt/km3000/config/
+    - name: logs-volume
+      mountPath: /opt/BackupLog/
+  volumes:
+  - name: app-volume
+    hostPath:
+      path: /MultiTanent/PKI-APP/app/
+  - name: config-volume
+    hostPath:
+      path: /MultiTanent/PKI-APP/config/
+  - name: logs-volume
+    hostPath:
+      path: /MultiTanent/Backup_Logs/

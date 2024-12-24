@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pki-mail-deployment
+  namespace: tanent-1  # Namespace belirtilmi�
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pki-mail
+  template:
+    metadata:
+      labels:
+        app: pki-mail
+    spec:
+      containers:
+      - name: pki-mail-container
+        image: pkimail:1.0
+        ports:
+        - containerPort: 1025
+        - containerPort: 8025

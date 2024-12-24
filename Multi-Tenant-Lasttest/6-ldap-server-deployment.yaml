@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ldap-server-deployment
+  namespace: tanent-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ldap-server
+  template:
+    metadata:
+      labels:
+        app: ldap-server
+    spec:
+      containers:
+      - name: ldap-server
+        image: procenneldap:1.0
+        env:
+        - name: LDAP_DOMAIN
+          value: "procenne.com"
+        - name: LDAP_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ldap-server-secrets
+              key: LDAP_ADMIN_PASSWORD
+        - name: LDAP_TLS_VERIFY_CLIENT
+          value: "never"
+        - name: LDAP_TLS_CRT_FILENAME
+          value: "ldap.crt"
+        - name: LDAP_TLS_KEY_FILENAME
+          value: "ldap.key"
+        ports:
+        - containerPort: 389
+        - containerPort: 636

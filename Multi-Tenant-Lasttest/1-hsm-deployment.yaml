@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hsm
+  namespace: tanent-1  # Namespace belirtilmiş
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hsm
+  template:
+    metadata:
+      labels:
+        app: hsm
+    spec:
+      containers:
+      - name: hsm
+        image: pkihsm-twoslot:2.0
+        ports:
+        - containerPort: 5000

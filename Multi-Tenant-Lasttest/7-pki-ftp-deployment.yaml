@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pki-ftp-deployment
+  namespace: tanent-1  # Namespace belirtilmi�
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pki-ftp
+  template:
+    metadata:
+      labels:
+        app: pki-ftp
+    spec:
+      containers:
+      - name: pki-ftp-container
+        image: pkiftpserver:1.0
+        ports:
+        - containerPort: 21
+        volumeMounts:
+        - name: ftp-data-volume
+          mountPath: /app/LogBackup
+        command: ["python3", "-m", "python_ftp_server", "--ip", "0.0.0.0", "--port", "21", "-u", "FTPAdmin", "-p", "1q2w3e4r5t*", "-d", "/app/LogBackup"]
+      volumes:
+      - name: ftp-data-volume
+        hostPath:
+          path: /MultiTanent/FTP-Server/data/  # Bu yolu uygun �ekilde g�ncelleyin
