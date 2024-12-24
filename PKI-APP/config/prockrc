@@ -1,0 +1,12 @@
+[general]
+#disable_mutex = false
+
+[debug]
+log_severity = 3
+
+[ha]
+load_balance = true
+[slot.0]
+user_pin = 1111
+[slot.1]
+user_pin = 1111

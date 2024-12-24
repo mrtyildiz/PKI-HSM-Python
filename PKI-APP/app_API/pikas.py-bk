@@ -1,0 +1,54 @@
+import pika
+import json
+import requests
+
+ROOT_API_URL = "http://localhost:8000/"
+def on_request(ch, method, properties, body):
+    # İstek verilerini al
+    request_data = json.loads(body.decode("utf-8"))
+    
+    # İstek verilerini işle (örneğin, gerçek bir API çağrısı yap)
+    response_data = Main_Request(request_data)
+    
+    # Yanıtı gönder
+    ch.basic_publish(
+        exchange='',
+        routing_key=properties.reply_to,
+        properties=pika.BasicProperties(correlation_id=properties.correlation_id),
+        body=json.dumps(response_data)
+    )
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+
+def Active_HSM_Request(request_data):
+    URL = ROOT_API_URL + "HSM_Pool_Active/"
+    # İsteği gönderin
+    response = requests.post(URL, json=request_data)
+    return response.json()
+
+
+def Main_Request(request_data):
+    # İstek verilerini işleyen işlemi burada gerçekleştirin
+    # Örnek olarak gelen veriyi işleyerek bir yanıt veriyoruz
+    if request_data['Endpoint'] == 'HSM_Pool_Active/':
+        if "Endpoint" in request_data:
+            del request_data["Endpoint"]
+        response = Active_HSM_Request(request_data) 
+    else:
+        response = request_data["Endpoint"]
+    return response
+
+
+### Sistem başlatıldı.
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters(
+        'rabbitmq',
+        credentials=pika.PlainCredentials('myuser', 'mypassword')
+    )
+)
+channel = connection.channel()
+
+channel.queue_declare(queue='api_queue')
+channel.basic_consume(queue='api_queue', on_message_callback=on_request)
+
+print("API Sunucusu Başlatıldı. İstekleri Dinliyor...")
+channel.start_consuming()
