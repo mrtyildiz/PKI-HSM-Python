@@ -1,0 +1,238 @@
+version: '2'
+services:
+  pki-hsm-1:
+    image: pkihsm-twoslot:5.0
+    container_name: hsm-1
+    ports:
+      - "5000:5000"
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.2
+
+  pki-hsm-2:
+    image: pkihsm-twoslot:5.0
+    container_name: hsm-2
+    ports:
+      - "5050:5000"
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.3
+
+  postgres:
+    image: postgres:latest
+    container_name: PKI-DB
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      TZ: "Europe/Istanbul" # Saat dilimini ayarla
+    volumes:
+      - ./Postgresql/:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.4 # Statik IP adresini belirtin
+
+  app-pki:
+    image: pki_hsm_all:1.0
+    container_name: pki-app
+    environment:
+      PYKCS11LIB: /lib64/libprocryptoki.so
+      RABBITMQ_HOST: pki_rabbitmq  # RabbitMQ servisinin hostname'i
+      TZ: "Europe/Istanbul" # Saat dilimini ayarla
+      API_Slot: IoaqNDIk1Z9Lx8XL3t13PuoovWvum83U
+      Slot_PIN: MvkDZ+wyBWe50brGkXD7pg==
+      Slot_ID: 1
+      Slot_Key_Name: Slot_Encrypt_AES
+      Rabbit_Host: rabbitmq
+      RabbitUser: myuser
+      RabbitPassword: mypassword
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./PKI-APP/app/:/app/
+  #    - ./PKI-APP/app_single_pikas/:/app/
+      - ./PKI-APP/config/:/opt/procrypt/km3000/config/
+      - ./Backup_Logs/:/opt/BackupLog/
+      - ./Lisans/Lisans_Associate/:/app/Lisans/
+   #   - ./PKI-APP/libprocryptoki.so:/lib64/libprocryptoki.so
+    command: ["python3", "/app/pikas.py"]
+    #command: ["python3", "/app/app.py"]
+    #command: ["sleep", "36000"]
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.5 # Statik IP adresini belirtin
+
+  app-gui:
+    image: pki-gui:3.0
+    container_name: pki-gui    
+    depends_on:
+      - postgres
+      - app-pki
+    environment:
+      NAMESPACE: "Tanent-1"
+  #    Postgresql_DB: pki_gui_db
+      Postgresql_DB: postgres
+      Postgresql_User: postgres
+      Postgresql_Password: postgres
+      Postgresql_IP: postgres
+      Postgresql_Port: 5432
+      Rabbit_Host: rabbitmq
+      RabbitUser: myuser
+      RabbitPassword: mypassword
+      API_URL: http://app-pki:8000/
+      TZ: "Europe/Istanbul" # Saat dilimini ayarla
+      API_Slot: IoaqNDIk1Z9Lx8XL3t13PuoovWvum83U
+      LdapAdminPassword: "admin"
+      LdapDomainName: "cn=admin,dc=procenne,dc=com"
+      Ldap_HostName: ldap-server
+    ports:
+      - "9000:8000"
+    volumes:
+        - ./PKI-GUI/app/:/app/
+        - ./PKI-APP/app/CRT/:/app/app/CRT/:rb
+        - ./PKI-APP/app/Public/:/app/app/Public/
+        - ./PKI-APP/app/CSR/:/app/app/CSR/
+        - ./Backup_Logs/:/opt/BackupLog/
+        - ./Lisans/Lisans_Associate/:/app/app/Lisans/
+    command: ["sleep", "36000"]
+    #command: ["python3", "manage.py", "runserver_plus", "--cert-file","/app/CRT/pki-ssl.crt","--key-file","/app/CRT/pki-ssl.key","0.0.0.0:8000"]
+    #python3 manage.py runserver_plus --cert-file /app/CRT/pki-ssl.crt  --key-file /app/CRT/pki-ssl.key 0.0.0.0:8000
+    #command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.7 # Statik IP adresini belirtin
+
+  rabbitmq:
+      image: "rabbitmq:management"
+      container_name: "pki_rabbitmq"
+      ports:
+        - "5672:5672"
+        - "15672:15672" # Yönetim konsolu için port
+     
+      environment:
+        RABBITMQ_DEFAULT_USER: "myuser" # İstediğiniz kullanıcı adı
+        RABBITMQ_DEFAULT_PASS: "mypassword" # İstediğiniz şifre
+        TZ: "Europe/Istanbul" # Saat dilimini ayarla
+      volumes:
+        - ./rabbitmq_data:/var/lib/rabbitmq # Veri saklama için bir Docker volume
+      networks:
+        my_network:
+          ipv4_address: 172.16.0.8 # Statik IP adresini belirtin
+      depends_on:
+        - app-pki
+        - app-gui
+
+
+  ldap-server:
+    image: procenneldap:latest
+    container_name: ldap-server
+    environment:
+      - LDAP_DOMAIN=procenne.com
+      - LDAP_ADMIN_PASSWORD=admin
+      - LDAP_TLS_VERIFY_CLIENT=never
+      - LDAP_TLS_CRT_FILENAME=ldap.crt
+      - LDAP_TLS_KEY_FILENAME=ldap.key
+      # - LDAPS = yes
+      # - TLS_CA_CERT=/container/service/slapd/assets/certs/ca.crt
+      # - TLS_CERT =/container/service/slapd/assets/certs/ldap.crt
+    # volumes:
+    #     - ./Ldap:/container/service/slapd/assets/certs
+    ports:
+      - 389:389
+      - 636:636
+
+  # openldap:
+  #   image: osixia/openldap:latest
+  #   container_name: openldap-container
+  #   environment:
+  #     - LDAP_ORGANISATION=Procenne
+  #     - LDAP_DOMAIN=procenne.com
+  #     - LDAP_ADMIN_PASSWORD=admin
+  #   ports:
+  #     - "389:389"
+  #     - "636:636"
+
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.11
+
+  pki-ftp:
+    image: pkiftpserver:latest
+    container_name: ftp-pki
+    ports:
+       - "21:21"
+    volumes:
+      - ./FTP-Server/data/:/app/LogBackup/
+    command: ["python3","-m", "python_ftp_server", "--ip","0.0.0.0","--port","21","-u","FTPAdmin","-p","1q2w3e4r5t*","-d","/app/LogBackup/"]
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.12
+  pki-mail:
+    image: pkimail:1.0
+    container_name: pki-mail
+    ports:
+       - "1025:1025"
+       - "8025:8025"
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.13
+        
+  pki-alarm:
+    image: pkialarm:2.0
+    container_name: pki-alarm
+    ports:
+       - "9090:8000"
+    environment:
+      Postgresql_DB: pki_gui_db
+      Postgresql_User: postgres
+      Postgresql_Password: postgres
+      Postgresql_IP: postgres
+      Postgresql_Port: 5432
+    volumes:
+      - ./PKI-Alarm/app/:/app/
+      - ./PKI-GUI/app/app/models.py:/app/app/models.py
+    #command: ["python3", "manage.py"]
+    command: ["sleep", "36000"]
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.14
+
+
+  pki-backup-service:
+    image: pki-backup-service:1.0
+    container_name: pki-backup
+    ports:
+       - "9100:8000"
+    environment:
+      Postgresql_DB: pki_gui_db
+      Postgresql_User: postgres
+      Postgresql_Password: postgres
+      Postgresql_IP: postgres
+      Postgresql_Port: 5432
+      Rabbit_Host: rabbitmq
+      RabbitUser: myuser
+      RabbitPassword: mypassword
+      API_Slot: IoaqNDIk1Z9Lx8XL3t13PuoovWvum83U
+      TokenName: PKI_Client
+      KeyName: Log_File_Encrypt
+      ftp_host: pki-ftp
+      ftp_user: FTPAdmin
+      ftp_password: 1q2w3e4r5t*
+    volumes:
+      - ./PKI-Backup-Service/app/:/app/
+      - ./PKI-GUI/app/app/models.py:/app/app/models.py
+      - ./Backup_Logs/:/opt/BackupLog/
+    command: ["python3", "manage.py"]
+    #command: ["sleep", "36000"]
+    networks:
+      my_network:
+        ipv4_address: 172.16.0.15
+
+networks:
+  my_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.0/24

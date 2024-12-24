@@ -1,0 +1,98 @@
+DB AES
+
+AES-256:
+
+Component-1: 9A174958DE21B90970784589DCB142ADE6D537EAB12B052A813001AE88810DBC D9E8D7
+Component-2: 9EE9A15D8574FB5582B324430DE6DB6F353C55EA0F485938E22923281955B41D E8A3F9
+Component-3: 71F5B64B06C669DF75A6F5126DE0AB502DF72E3D70DF1B4C5D441ED09DF2A031 
+
+
+docker run -p 389:389 -p 636:636 --name my-openldap-container -e LDAP_TLS_VERIFY_CLIENT=never -e LDAP_TLS_CRT_FILENAME=ldap.crt -e LDAP_TLS_KEY_FILENAME=ldap.key -v /path/to/ldap-certs:/container/service/slapd/assets/certs --detach osixia/openldap
+
+
+curl \
+--ssl-reqd \
+--url 'smtp://sandbox.smtp.mailtrap.io:2525' \
+--user '5d26c5b4f47d8a:26866cfe03dd40' \
+--mail-from from@example.com \
+--mail-rcpt murat.yildiz@procenne.com \
+--upload-file - <<EOF
+From: Magic Elves <from@example.com>
+To: Mailtrap Inbox <murat.yildiz@procenne.com>
+Subject: You are awesome!
+Content-Type: multipart/alternative; boundary="boundary-string"
+
+--boundary-string
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+Congrats for sending test email with Mailtrap!
+
+If you are viewing this email in your inbox =E2=80=93 the integration works.
+Now send your email using our SMTP server and integration of your choice!
+
+Good luck! Hope it works.
+
+--boundary-string
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DUTF-8">
+  </head>
+  <body style=3D"font-family: sans-serif;">
+    <div style=3D"display: block; margin: auto; max-width: 600px;" class=3D"main">
+      <h1 style=3D"font-size: 18px; font-weight: bold; margin-top: 20px">Congrats for sending test email with Mailtrap!</h1>
+      <p>If you are viewing this email in your inbox =E2=80=93 the integration works.</p>
+      <img alt=3D"Inspect with Tabs" src=3D"https://assets-examples.mailtrap.io/integration-examples/welcome.png" style=3D"width: 100%;">
+      <p>Now send your email using our SMTP server and integration of your choice!</p>
+      <p>Good luck! Hope it works.</p>
+    </div>
+    <!-- Example of invalid for email html/css, will be detected by Mailtrap: -->
+    <style>
+      .main { background-color: white; }
+      a:hover { border-left-width: 1em; min-height: 2em; }
+    </style>
+  </body>
+</html>
+
+--boundary-string--
+EOF
+
+
+
+
+TIME_ZONE = 'Europe/Istanbul'
+APSCHEDULER = {
+    'jobs': [
+        {
+            'id': 'my_scheduled_job',
+            'func': 'myapp.tasks.my_scheduled_task',
+            'trigger': 'interval',
+            'minutes': 1,
+        },
+    ],
+    'timezone': 'Europe/Istanbul',  # Türkiye saati
+} 
+
+
+
+Rules.objects.filter(created_by=request.user.id)
+multifactor_value = MultifactorModel.objects.filter(user_factor=request.user.id).values_list('Pool_create', flat=True).first()
+
+obje = certificates.objects.filter(created_by=request.user.id)
+
+
+
+
+
+multifactor_value = MultifactorModel.objects.filter(user_factor=request.user.id).values_list('Pool_Upload', flat=True).first()
+
+
+
+
+@user_type_required(user_types=['System_User','Operator_User','Client_User'])
