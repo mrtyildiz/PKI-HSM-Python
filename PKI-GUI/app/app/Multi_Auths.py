@@ -1,4 +1,4 @@
-from twilio.rest import Client
+#from twilio.rest import Client
 from random import randint
 import smtplib
 
